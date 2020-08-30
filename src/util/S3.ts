@@ -6,6 +6,7 @@ const s3: aws.S3 = new aws.S3({
 	accessKeyId: get('s3.accessKeyId'),
 	secretAccessKey: get('s3.secretAccessKey'),
 	endpoint: get('s3.endpoint'),
+	region: get('s3.region'),
 	s3ForcePathStyle: true,
 	signatureVersion: 'v4',
 });
@@ -18,11 +19,12 @@ class S3CDN {
 		});
 	}
 
-	public async upload(key: string, data: Buffer | Stream): Promise<void> {
+	public async upload(key: string, data: Buffer | Stream, kind?: string): Promise<void> {
 		await s3.upload({
 			Key: key,
 			Body: data,
 			Bucket: get('s3.bucket'),
+			ContentType: kind,
 		}).promise();
 	}
 }

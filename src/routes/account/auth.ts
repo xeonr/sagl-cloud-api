@@ -10,7 +10,6 @@ import { Request } from '../../util/Auth';
 import { redisPub } from '../../util/Redis';
 import { RouterFn } from './../../util/Types';
 
-
 const page = `
 <html>
 <head>

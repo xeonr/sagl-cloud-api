@@ -5,6 +5,8 @@ import { Sequelize } from 'sequelize-typescript';
 
 import * as accounts from './routes/account/accounts';
 import * as auth from './routes/account/auth';
+import * as gallery from './routes/gallery/gallery';
+import * as config from './routes/saves/config';
 import * as saves from './routes/saves/save';
 import * as mine from './routes/servers/personal';
 import { validateAuth } from './util/Auth';
@@ -29,6 +31,8 @@ const routes: ((router: Server) => void)[] = [
 	auth.routes,
 	mine.routes,
 	saves.routes,
+	gallery.routes,
+	config.routes,
 ];
 
 (async (): Promise<void> => {
