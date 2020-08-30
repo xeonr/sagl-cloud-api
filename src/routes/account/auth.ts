@@ -10,6 +10,27 @@ import { Request } from '../../util/Auth';
 import { redisPub } from '../../util/Redis';
 import { RouterFn } from './../../util/Types';
 
+
+const page = `
+<html>
+<head>
+	<title>Return to the app</title>
+	<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+	<style>
+		* { background: #111; color: #FFF; font-family: "Open Sans", sans-serif; }
+		p { text-align: center; color: rgba(255,255,255,0.5);  }
+		p span { opacity: 1; }
+		div { height: 100vh; display: flex; flex-direction: row; align-items: center; justify-content: center; font-size: 1.5em; }
+	</style>
+</head>
+<body>
+	<div>
+		<p>Please <span>return to the app</span> to continue.</p>
+	</div>
+</body>
+<html>
+`;
+
 function createRedirect(state: string): string {
 	return 'https://discord.com/api/oauth2/authorize?'
 		+ `client_id=${get('discord.clientId')}`
@@ -98,9 +119,7 @@ export const routes: RouterFn = (router: Server): void => {
 
 			await redisPub.setex(`auth:${request.query.state}`, 60, JSON.stringify({ userId: account.id! }));
 
-			return {
-				success: true,
-			};
+			return page.trim();
 		},
 	});
 
