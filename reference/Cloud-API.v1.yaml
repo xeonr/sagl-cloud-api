@@ -17,7 +17,7 @@ servers:
 paths:
   /account:
     get:
-      summary: Your GET endpoint
+      summary: Get account
       tags:
         - Account
       operationId: get-account
@@ -33,7 +33,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
     patch:
-      summary: ''
+      summary: Update account
       operationId: update-account
       description: Set account level properties
       parameters: []
@@ -66,7 +66,7 @@ paths:
         - Account
   /auth:
     get:
-      summary: Your GET endpoint
+      summary: Initialise authentication
       tags:
         - Auth
       responses:
@@ -98,7 +98,7 @@ paths:
           name: code
           description: Code provided from discord for the oauth flow
     post:
-      summary: ''
+      summary: Convert state to JWT
       operationId: convert-auth
       responses:
         '200':
@@ -164,7 +164,7 @@ paths:
         - Auth
   /gallery:
     get:
-      summary: Your GET endpoint
+      summary: Get gallery images
       tags:
         - Gallery
       responses:
@@ -196,7 +196,7 @@ paths:
       security:
         - JWT: []
     post:
-      summary: ''
+      summary: Upload gallery image
       operationId: post-gallery
       responses:
         '200':
@@ -255,7 +255,7 @@ paths:
         description: ''
         required: true
     delete:
-      summary: ''
+      summary: Delete gallery image
       operationId: delete-gallery-uuid
       responses:
         '204':
@@ -288,6 +288,173 @@ paths:
       tags:
         - Gallery
       description: Delete a gallery image by its id
+  /servers/personal:
+    get:
+      summary: Get all servers
+      tags:
+        - Servers
+      responses:
+        '200':
+          description: Return personal server
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PersonalServer'
+      operationId: get-servers-personal
+      description: Returns all servers the user has storecd
+      security:
+        - JWT: []
+    parameters: []
+  '/servers/personal/{hash}':
+    parameters:
+      - schema:
+          type: string
+          minLength: 40
+          maxLength: 40
+          pattern: '^[A-Z]+$'
+        name: hash
+        in: path
+        required: true
+        description: 'SHA1 of the server name with the port, lowercased'
+    put:
+      summary: Store a server
+      tags:
+        - Servers
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalServer'
+              examples:
+                example-1:
+                  value:
+                    id: 5f538c39-e160-4c5f-bfc4-37c42f1405fe
+                    hash: 0346549F60931DBBEEDE735AC242F18A0AF6DA5F
+                    address: 'example.org:7777'
+                    serverPassword: null
+                    rconPassword: null
+                    createdAt: '2020-08-30T04:08:49.015Z'
+                    updatedAt: '2020-08-30T04:09:03.437Z'
+      operationId: put-servers-personal-hash
+      description: Store a server record with credentials.
+      security:
+        - JWT: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                address:
+                  type: string
+                  description: 'Server address, including port'
+                serverPassword:
+                  type:
+                    - string
+                    - 'null'
+                rconPassword:
+                  type:
+                    - string
+                    - 'null'
+              required:
+                - address
+            examples:
+              example-1:
+                value:
+                  address: string
+                  serverPassword: null
+                  rconPassword: null
+    delete:
+      summary: Remove a server
+      tags:
+        - Servers
+      responses:
+        '204':
+          description: No Content
+      operationId: delete-servers-personal-hash
+      security:
+        - JWT: []
+      description: Remove a remembered server
+  '/config/{file}':
+    parameters:
+      - schema:
+          type: string
+          enum:
+            - gta
+        name: file
+        in: path
+        required: true
+        description: File to interact with
+    get:
+      summary: Get comfig
+      tags:
+        - Saves
+      responses:
+        '200':
+          description: Stored value
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples:
+                Example:
+                  value: {}
+        '404':
+          description: Config key not set
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  statusCode:
+                    type: number
+                  error:
+                    type: string
+                required:
+                  - message
+                  - statusCode
+                  - error
+              examples:
+                No authentication:
+                  value:
+                    statusCode: 404
+                    error: Not Found
+                    message: Config key not set
+      operationId: get-config-file
+      description: Get the current configuration
+    put:
+      summary: Store config
+      tags:
+        - Saves
+      responses:
+        '200':
+          description: Stored value
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples:
+                Example:
+                  value: {}
+      operationId: put-config-file
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: object
+        description: Value is any object representing the config
+      description: Store configuration
 components:
   schemas:
     User:
@@ -343,13 +510,59 @@ components:
         - createdAt
         - updatedAt
       description: An authenticated user.
+      x-tags:
+        - Account
     PersonalServer:
       title: PersonalServer
       type: object
+      description: A remembered server unique to this user.
+      x-examples:
+        Example:
+          id: 5f538c39-e160-4c5f-bfc4-37c42f1405fe
+          hash: 0346549F60931DBBEEDE735AC242F18A0AF6DA5F
+          address: 'example.org:7777'
+          serverPassword: null
+          rconPassword: null
+          createdAt: '2020-08-30T04:08:49.015Z'
+          updatedAt: '2020-08-30T04:09:03.437Z'
+        example-2:
+          id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
+          hash: string
+          address: string
+          serverPassword: null
+          createdAt: '2019-08-24T14:15:22Z'
+          updatedAt: '2019-08-24T14:15:22Z'
+          rconPassword: null
       properties:
         id:
           type: string
-      description: A remembered server unique to this user.
+          format: uuid
+        hash:
+          type: string
+          description: 'Hash of the address, used to identify this'
+        address:
+          type: string
+        serverPassword:
+          type:
+            - string
+            - 'null'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        rconPassword:
+          type:
+            - string
+            - 'null'
+      required:
+        - id
+        - hash
+        - address
+        - serverPassword
+        - createdAt
+        - updatedAt
     GalleryImage:
       title: GalleryImage
       type: object
@@ -385,6 +598,8 @@ components:
           source: samp
           createdAt: '2020-08-30T19:19:50.660Z'
           cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/gallery/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/cc3d556d-2e7b-447d-beb1-a58158926b1b.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200830%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200830T203835Z&X-Amz-Expires=900&X-Amz-Signature=eabac91c6542c38808ba3a7139c29b95782a30cf50965b21ed9b8667a87c0dee&X-Amz-SignedHeaders=host'
+      x-tags:
+        - Gallery
   securitySchemes:
     JWT:
       type: http
@@ -393,3 +608,5 @@ tags:
   - name: Account
   - name: Auth
   - name: Gallery
+  - name: Servers
+  - name: Saves
