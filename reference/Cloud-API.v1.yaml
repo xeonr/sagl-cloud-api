@@ -18,7 +18,8 @@ paths:
   /account:
     get:
       summary: Your GET endpoint
-      tags: []
+      tags:
+        - Account
       operationId: get-account
       description: Returns the currently authenticated account
       parameters: []
@@ -61,10 +62,13 @@ paths:
                 value:
                   sampUsername: LukeT
         description: Update user
+      tags:
+        - Account
   /auth:
     get:
       summary: Your GET endpoint
-      tags: []
+      tags:
+        - Auth
       responses:
         '200':
           description: Success page
@@ -156,10 +160,13 @@ paths:
                 value:
                   state: 0e231ca7-8c83-44ad-9df9-f0699a512c67
         description: ''
+      tags:
+        - Auth
   /gallery:
     get:
       summary: Your GET endpoint
-      tags: []
+      tags:
+        - Gallery
       responses:
         '200':
           description: Uploaded images
@@ -172,11 +179,11 @@ paths:
               examples:
                 Example image:
                   value:
-                    id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
-                    uploadedAt: '2011-11-11T00:00:00.000Z'
-                    source: samp
-                    createdAt: '2020-08-30T19:19:50.660Z'
-                    cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/gallery/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/cc3d556d-2e7b-447d-beb1-a58158926b1b.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200830%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200830T203835Z&X-Amz-Expires=900&X-Amz-Signature=eabac91c6542c38808ba3a7139c29b95782a30cf50965b21ed9b8667a87c0dee&X-Amz-SignedHeaders=host'
+                    - id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
+                      uploadedAt: '2011-11-11T00:00:00.000Z'
+                      source: samp
+                      createdAt: '2020-08-30T19:19:50.660Z'
+                      cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/gallery/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/cc3d556d-2e7b-447d-beb1-a58158926b1b.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200830%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200830T203835Z&X-Amz-Expires=900&X-Amz-Signature=eabac91c6542c38808ba3a7139c29b95782a30cf50965b21ed9b8667a87c0dee&X-Amz-SignedHeaders=host'
       operationId: get-gallery
       description: Get all assets uploaded to the gallery
       parameters:
@@ -198,6 +205,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GalleryImage'
+              examples:
+                example-1:
+                  value:
+                    id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
+                    source: string
+                    uploadedAt: '2019-08-24T14:15:22Z'
+                    createdAt: '2019-08-24T14:15:22Z'
+                    cdnUrl: 'http://example.com'
       description: Upload an image to the gallery
       security:
         - JWT: []
@@ -223,10 +238,12 @@ paths:
             examples:
               Example upload:
                 value:
-                  file: /** example **/
+                  file: {}
                   source: string
                   uploadedAt: string
         description: ''
+      tags:
+        - Gallery
     parameters: []
   '/gallery/{uuid}':
     parameters:
@@ -236,6 +253,7 @@ paths:
         name: uuid
         in: path
         description: ''
+        required: true
     delete:
       summary: ''
       operationId: delete-gallery-uuid
@@ -267,6 +285,9 @@ paths:
                     message: Gallery image not found
       security:
         - JWT: []
+      tags:
+        - Gallery
+      description: Delete a gallery image by its id
 components:
   schemas:
     User:
@@ -368,3 +389,7 @@ components:
     JWT:
       type: http
       scheme: bearer
+tags:
+  - name: Account
+  - name: Auth
+  - name: Gallery
