@@ -1,0 +1,370 @@
+openapi: 3.0.0
+info:
+  title: Cloud API
+  version: '1.0'
+  contact:
+    name: Luke Thompson
+    url: 'https://sagl.xeonr.com'
+    email: luke@xeonr.com
+  description: SAGL Cloud API
+servers:
+  - url: 'http://localhost:8000/v1'
+    description: Development
+  - url: 'https://sagl.xeonr.com/v1'
+    description: Stage
+  - url: 'https://cloud-api.salauncher.app/v1'
+    description: Production
+paths:
+  /account:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      operationId: get-account
+      description: Returns the currently authenticated account
+      parameters: []
+      security:
+        - JWT: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    patch:
+      summary: ''
+      operationId: update-account
+      description: Set account level properties
+      parameters: []
+      security:
+        - JWT: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sampUsername:
+                  type: string
+                  description: Username for SAMP
+              required:
+                - sampUsername
+            examples:
+              Example:
+                value:
+                  sampUsername: LukeT
+        description: Update user
+  /auth:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: Success page
+        '301':
+          description: Redirect to discord
+          headers:
+            Location:
+              schema:
+                type: string
+              description: Discord destination
+      operationId: get-auth
+      description: |-
+        Login through discord.
+
+        For an app flow, you should direct the user to this input with state set to a unique UUID value you know. You can then poll POST /auth for the authentication token.
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+          in: query
+          name: state
+          description: A unique value to identify this request
+          required: true
+        - schema:
+            type: string
+          in: query
+          name: code
+          description: Code provided from discord for the oauth flow
+    post:
+      summary: ''
+      operationId: convert-auth
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  jwt:
+                    type: string
+                    description: The authentication token to pass as a header
+                required:
+                  - jwt
+              examples:
+                Success:
+                  value:
+                    jwt: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+        '403':
+          description: Unable to convert state token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  statusCode:
+                    type: number
+                  error:
+                    type: string
+                required:
+                  - message
+                  - statusCode
+                  - error
+              examples:
+                No authentication:
+                  value:
+                    statusCode: 403
+                    error: Forbidden
+                    message: No such authentication attempt
+      description: |-
+        Convert a state token into an authentication token
+
+        The JWT should be passed as the header `Authorization: Bearer {token}`
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                state:
+                  type: string
+                  format: uuid
+              required:
+                - state
+            examples:
+              Example:
+                value:
+                  state: 0e231ca7-8c83-44ad-9df9-f0699a512c67
+        description: ''
+  /gallery:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: Uploaded images
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GalleryImage'
+              examples:
+                Example image:
+                  value:
+                    id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
+                    uploadedAt: '2011-11-11T00:00:00.000Z'
+                    source: samp
+                    createdAt: '2020-08-30T19:19:50.660Z'
+                    cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/gallery/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/cc3d556d-2e7b-447d-beb1-a58158926b1b.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200830%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200830T203835Z&X-Amz-Expires=900&X-Amz-Signature=eabac91c6542c38808ba3a7139c29b95782a30cf50965b21ed9b8667a87c0dee&X-Amz-SignedHeaders=host'
+      operationId: get-gallery
+      description: Get all assets uploaded to the gallery
+      parameters:
+        - schema:
+            type: string
+            example: samp
+          in: query
+          name: source
+          description: The source of the image
+      security:
+        - JWT: []
+    post:
+      summary: ''
+      operationId: post-gallery
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GalleryImage'
+      description: Upload an image to the gallery
+      security:
+        - JWT: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: object
+                  description: Multipart file
+                source:
+                  type: string
+                  description: 'Source of the file, e.g samp or gta'
+                uploadedAt:
+                  type: string
+                  description: Time the file was created - this should be read from the file.
+              required:
+                - file
+                - source
+                - uploadedAt
+            examples:
+              Example upload:
+                value:
+                  file: /** example **/
+                  source: string
+                  uploadedAt: string
+        description: ''
+    parameters: []
+  '/gallery/{uuid}':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: uuid
+        in: path
+        description: ''
+    delete:
+      summary: ''
+      operationId: delete-gallery-uuid
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Gallery image not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  statusCode:
+                    type: number
+                  error:
+                    type: string
+                required:
+                  - message
+                  - statusCode
+                  - error
+              examples:
+                Not found:
+                  value:
+                    statusCode: 403
+                    error: Forbidden
+                    message: Gallery image not found
+      security:
+        - JWT: []
+components:
+  schemas:
+    User:
+      type: object
+      title: User
+      x-examples:
+        Account without SAMP:
+          id: ba949cd8-ec3c-40a2-9cb8-a1dcd388d226
+          discordUsername: Luke
+          discordDiscriminator: '0269'
+          discordId: '95531787442192384'
+          email: test@example.com
+          createdAt: '2020-08-30T03:31:42.994Z'
+          updatedAt: '2020-08-30T03:31:42.994Z'
+          sampUsername: null
+        Account with SAMP:
+          id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
+          discordUsername: Luke
+          discordDiscriminator: '0269'
+          discordId: '95531787442192384'
+          email: test@example.com
+          createdAt: '2020-08-30T03:31:42.994Z'
+          updatedAt: '2020-08-30T03:31:42.994Z'
+          sampUsername: LukeT
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: uuid
+        discordUsername:
+          type: string
+        discordDiscriminator:
+          type: string
+          maxLength: 4
+          minLength: 4
+          example: '0001'
+        email:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        sampUsername:
+          type: string
+          description: The configured username for SAMP
+      required:
+        - id
+        - discordUsername
+        - discordDiscriminator
+        - email
+        - createdAt
+        - updatedAt
+      description: An authenticated user.
+    PersonalServer:
+      title: PersonalServer
+      type: object
+      properties:
+        id:
+          type: string
+      description: A remembered server unique to this user.
+    GalleryImage:
+      title: GalleryImage
+      type: object
+      description: An uploaded image to the gallery
+      properties:
+        id:
+          type: string
+          format: uuid
+        source:
+          type: string
+          description: |
+            The image source (e.g samp or gta)
+        uploadedAt:
+          type: string
+          format: date-time
+          description: This is the time the image was created. This may be before createdAt
+        createdAt:
+          type: string
+          format: date-time
+        cdnUrl:
+          type: string
+          format: uri
+      required:
+        - id
+        - source
+        - uploadedAt
+        - createdAt
+        - cdnUrl
+      x-examples:
+        Example Image:
+          id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
+          uploadedAt: '2011-11-11T00:00:00.000Z'
+          source: samp
+          createdAt: '2020-08-30T19:19:50.660Z'
+          cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/gallery/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/cc3d556d-2e7b-447d-beb1-a58158926b1b.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200830%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200830T203835Z&X-Amz-Expires=900&X-Amz-Signature=eabac91c6542c38808ba3a7139c29b95782a30cf50965b21ed9b8667a87c0dee&X-Amz-SignedHeaders=host'
+  securitySchemes:
+    JWT:
+      type: http
+      scheme: bearer
