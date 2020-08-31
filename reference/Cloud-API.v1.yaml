@@ -522,7 +522,7 @@ paths:
         in: path
         required: true
     get:
-      summary: Your GET endpoint
+      summary: Get a single save
       tags: []
       responses:
         '200':
@@ -805,6 +805,8 @@ components:
         - current
         - current
       description: A game save
+      x-tags:
+        - Saves
     GameSaveState:
       title: GameSaveState
       type: object
