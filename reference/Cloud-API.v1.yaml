@@ -14,7 +14,8 @@ info:
     - GTA Configuration
     - Game/SAMP Screenshots
 servers:
-  - url: 'http://127.0.0.1:8000'
+  - url: 'https://cloud-api.sagl.app'
+    description: Production
 paths:
   /account:
     get:
