@@ -523,7 +523,8 @@ paths:
         required: true
     get:
       summary: Get a single save
-      tags: []
+      tags:
+        - Saves
       responses:
         '200':
           description: OK
