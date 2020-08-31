@@ -356,16 +356,15 @@ paths:
                   description: 'Server address, including port'
                 serverPassword:
                   oneOf:
-                    - {}
-                  type:
-                    - string
-                    - 'null'
+                    - type: string
+                    - type: 'null'
+                      properties: {}
                 rconPassword:
                   oneOf:
-                    - properties: {}
-                  type:
-                    - string
-                    - 'null'
+                    - type: string
+                      properties: {}
+                    - type: 'null'
+                      properties: {}
               required:
                 - address
                 - serverPassword
@@ -694,9 +693,11 @@ components:
           format: date-time
         sampUsername:
           description: The configured username for SAMP
-          type:
-            - string
-            - 'null'
+          oneOf:
+            - type: string
+              properties: {}
+            - type: 'null'
+              properties: {}
       required:
         - id
         - discordUsername
@@ -704,6 +705,7 @@ components:
         - email
         - createdAt
         - updatedAt
+        - sampUsername
     PersonalServer:
       title: PersonalServer
       type: object
@@ -738,10 +740,10 @@ components:
           type: string
         serverPassword:
           oneOf:
-            - properties: {}
-          type:
-            - string
-            - 'null'
+            - type: string
+              properties: {}
+            - type: 'null'
+              properties: {}
         createdAt:
           type: string
           format: date-time
@@ -751,9 +753,9 @@ components:
         rconPassword:
           oneOf:
             - properties: {}
-          type:
-            - string
-            - 'null'
+              type: string
+            - type: 'null'
+              properties: {}
       required:
         - id
         - hash
