@@ -64,7 +64,8 @@ export const routes: RouterFn = (router: Server): void => {
 					hash: Joi.string().length(40).uppercase().required(),
 				},
 				payload: {
-					address: Joi.string().required(),
+					address: Joi.string().max(50).required(),
+					port: Joi.number().port().required(),
 					serverPassword: Joi.string().allow(null).required(),
 					rconPassword: Joi.string().allow(null).required(),
 				},
