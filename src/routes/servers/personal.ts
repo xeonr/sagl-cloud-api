@@ -82,7 +82,6 @@ export const routes: RouterFn = (router: Server): void => {
 
 			if (sha !== request.params.hash && await PersonalServer.count({
 				where: {
-					// ...(server ? { id: { [Op.ne]: server.id } } : {}),
 					hash: sha,
 					userId: request.auth.credentials.user.id,
 				},
