@@ -336,7 +336,9 @@ paths:
                   value:
                     id: 5f538c39-e160-4c5f-bfc4-37c42f1405fe
                     hash: 0346549F60931DBBEEDE735AC242F18A0AF6DA5F
-                    address: "example.org:7777"
+                    address: "example.org"
+                    description: test
+                    port: 7777
                     serverPassword: null
                     rconPassword: null
                     createdAt: "2020-08-30T04:08:49.015Z"
@@ -353,7 +355,7 @@ paths:
               properties:
                 address:
                   type: string
-                  description: "Server address, including port"
+                  description: "Server address"
                 serverPassword:
                   oneOf:
                     - type: string
@@ -365,16 +367,21 @@ paths:
                 port:
                   type: number
                   maximum: 65535
-                  minimum: 9
+                  minimum: 0
+                description:
+                  type: string
+
               required:
                 - address
                 - serverPassword
                 - rconPassword
+                - description
                 - port
             examples:
               example-1:
                 value:
                   address: string
+                  description: string
                   port: 7777
                   serverPassword: null
                   rconPassword: null
@@ -568,8 +575,7 @@ paths:
               examples:
                 Game Save:
                   value:
-                    id: ebd611dc-858e-46e5-82a4-f3e55f84308a
-                    createdAt: "2020-08-30T05:26:38.816Z"
+                    slot: 1
                     states:
                       - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
                         name: test
@@ -631,7 +637,7 @@ paths:
                       hash: FD3D158ECA755C791B6890AAAB62C6C005698862
                       name: test
                       version: Version 2.0 German
-                      completed: 10
+                      completed: 1
                       savedAt: "2011-11-11T00:00:00.000Z"
                       createdAt: "2020-08-30T05:38:32.903Z"
                       cdnUrl: "https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host"
@@ -710,6 +716,7 @@ components:
           id: 5f538c39-e160-4c5f-bfc4-37c42f1405fe
           hash: 0346549F60931DBBEEDE735AC242F18A0AF6DA5F
           address: example.org
+          description: magic
           port: 7777
           serverPassword: null
           rconPassword: null
@@ -744,6 +751,8 @@ components:
           type: number
           maximum: 65535
           default: 7777
+        description:
+          type: string
       required:
         - id
         - hash
@@ -751,6 +760,7 @@ components:
         - createdAt
         - updatedAt
         - port
+        - description
     GalleryImage:
       title: GalleryImage
       type: object

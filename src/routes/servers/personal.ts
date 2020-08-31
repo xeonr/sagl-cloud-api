@@ -8,9 +8,9 @@ import { PersonalServer } from '../../models/PersonalServer';
 import { Request } from '../../util/Auth';
 import { RouterFn } from '../../util/Types';
 
-function createSha(name: string): string {
+function createSha(name: string, port: number): string {
 	return createHash('sha1')
-		.update(name.toLowerCase())
+		.update(`${name.toLowerCase()}:${port}`)
 		.digest('hex').toUpperCase();
 }
 
@@ -66,13 +66,14 @@ export const routes: RouterFn = (router: Server): void => {
 				payload: {
 					address: Joi.string().max(50).required(),
 					port: Joi.number().port().required(),
+					description: Joi.string().required(),
 					serverPassword: Joi.string().allow(null).required(),
 					rconPassword: Joi.string().allow(null).required(),
 				},
 			},
 		},
 		handler: async (request: Request): Promise<Lifecycle.ReturnValue> => {
-			const sha: string = createSha(request.payload.address);
+			const sha: string = createSha(request.payload.address, request.payload.port);
 
 			const server: PersonalServer | null = await PersonalServer.findOne({
 				where: {

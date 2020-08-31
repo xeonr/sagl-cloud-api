@@ -20,6 +20,9 @@ export class PersonalServer extends Model<PersonalServer> {
 	public port: number;
 
 	@Column
+	public description: number;
+
+	@Column
 	public serverPassword: string | null;
 
 	@Column
