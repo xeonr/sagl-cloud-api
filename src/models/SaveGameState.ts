@@ -1,7 +1,7 @@
 import { BelongsTo, Column, ForeignKey, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
 import { v4 } from 'uuid';
 
-import { SaveGame } from './SaveGame';
+import { User } from './User';
 
 @Table
 export class SaveGameState extends Model<SaveGameState> {
@@ -23,11 +23,14 @@ export class SaveGameState extends Model<SaveGameState> {
 	public completed: number;
 
 	@Column
+	public slot: number;
+
+	@Column
 	public savedAt: Date;
 
-	@BelongsTo((): typeof SaveGame => SaveGame)
-	public saveGame: SaveGame;
+	@BelongsTo((): typeof User => User)
+	public user: User;
 
-	@ForeignKey((): typeof SaveGame => SaveGame)
-	public saveGameId: string;
+	@ForeignKey((): typeof User => User)
+	public userId: string;
 }

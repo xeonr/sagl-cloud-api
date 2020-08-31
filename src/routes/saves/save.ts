@@ -1,4 +1,3 @@
-import { forbidden, notFound } from '@hapi/boom';
 import { Lifecycle, Server } from '@hapi/hapi';
 import { createHash } from 'crypto';
 import { createReadStream } from 'fs';
@@ -8,11 +7,10 @@ import { omit, pick } from 'lodash';
 import { SaveGameState } from '../../models/SaveGameState';
 import { Request } from '../../util/Auth';
 import { S3 } from '../../util/S3';
-import { SaveGame } from './../../models/SaveGame';
 import { RouterFn } from './../../util/Types';
 
-function getSavePath(userId: string, saveHash: string): string {
-	return `saves/${userId}/${saveHash.substr(0, 2)}/${saveHash}`;
+function getSavePath(userId: string, slot: number, saveHash: string): string {
+	return `saves/${userId}/${slot}/${saveHash.substr(0, 2)}/${saveHash}`;
 }
 
 function hashFile(path: string): Promise<string> {
@@ -27,27 +25,35 @@ function hashFile(path: string): Promise<string> {
 
 function transformSave(userId: string, save: SaveGameState) {
 	return {
-		...omit(save.toJSON(), ['saveGameId', 'id', 'updatedAt']),
-		cdnUrl: S3.getUrl(getSavePath(userId, save.hash)),
+		...omit(save.toJSON(), ['saveGameId', 'id', 'updatedAt', 'slot']),
+		cdnUrl: S3.getUrl(getSavePath(userId, save.slot, save.hash)),
 	};
 }
+
+const SLOTS: number[] = [1, 2, 3, 4, 5, 6, 7, 8];
 
 export const routes: RouterFn = (router: Server): void => {
 	router.route({
 		method: 'GET',
 		path: '/saves',
 		handler: async (request: Request): Promise<Lifecycle.ReturnValue> => {
-			return SaveGame.findAll({
+			return Promise.all(SLOTS.map((slot: number) => SaveGameState.findAll({
 				where: {
+					slot,
 					userId: request.auth.credentials.user.id,
 				},
-				include: [{ model: SaveGameState, limit: 1, order: [['createdAt', 'desc']] }],
-			}).then((games: SaveGame[]) => {
-				return games.map((game: SaveGame) => omit({
-					...game.toJSON(),
-					current: game.states.length ? transformSave(request.auth.credentials.user.id, game.states[0]) : null,
-				}, ['states', 'userId', 'updatedAt']));
-			});
+				order: [['savedAt', 'DESC']],
+				limit: 1,
+			}).then(([game]: SaveGameState[]) => {
+				if (!game) {
+					return null;
+				}
+
+				return {
+					slot: game.slot,
+					current: transformSave(request.auth.credentials.user.id, game),
+				};
+			}))).then(r => r.filter(i => i !== null));
 		},
 	});
 
@@ -57,12 +63,14 @@ export const routes: RouterFn = (router: Server): void => {
 		options: {
 			validate: {
 				payload: {
+					slot: Joi.number().min(1).max(8).required(),
+					computerName: Joi.string().required(),
+					computerId: Joi.string().required(),
 					name: Joi.string().required(),
 					version: Joi.string().required(),
 					completed: Joi.number().required(),
 					savedAt: Joi.date().required(),
 					file: Joi.any().required(),
-					saveId: Joi.string().uuid({ version: 'uuidv4' }).optional(),
 				},
 			},
 			payload: {
@@ -75,68 +83,43 @@ export const routes: RouterFn = (router: Server): void => {
 			},
 		},
 		handler: async (request: Request): Promise<Lifecycle.ReturnValue> => {
-			let save: SaveGame;
-
-			if (request.payload.saveId) {
-				save = await SaveGame.findOne({
-					where: {
-						id: request.payload.saveId,
-						userId: request.auth.credentials.user.id,
-					},
-				});
-
-				if (!save) {
-					throw forbidden('Save does not exist');
-				}
-			} else {
-				save = await SaveGame.create({
-					id: request.payload.saveId,
-					userId: request.auth.credentials.user.id,
-				});
-			}
-
 			const hash: string = await hashFile(request.payload.file.path);
-			await S3.upload(getSavePath(request.auth.credentials.user.id, hash), createReadStream(request.payload.file.path));
-
-			await SaveGameState.create({
-				...pick(request.payload, ['name', 'version', 'completed', 'savedAt']),
-				hash,
-				saveGameId: save.id,
-			});
+			await S3.upload(getSavePath(request.auth.credentials.user.id, request.payload.slot, hash), createReadStream(request.payload.file.path));
 
 			return {
-				id: save.id,
+				slot: request.payload.slot,
+				current: transformSave(request.auth.credentials.user.id, await SaveGameState.create({
+					...pick(request.payload, ['name', 'version', 'completed', 'savedAt', 'slot', 'computerName', 'computerId']),
+					hash,
+				})),
 			};
 		},
 	});
 
 	router.route({
 		method: 'GET',
-		path: '/saves/{saveId}',
+		path: '/saves/{slot}',
 		options: {
 			validate: {
 				params: {
-					saveId: Joi.string().uuid({ version: 'uuidv4' }).required(),
+					slot: Joi.number().min(1).max(8).required(),
 				},
 			},
 		},
 		handler: async (request: Request): Promise<Lifecycle.ReturnValue> => {
-			return SaveGame.findOne({
+			return SaveGameState.findAll({
 				where: {
-					id: request.params.saveId,
+					slot: request.params.slot,
 					userId: request.auth.credentials.user.id,
 				},
-				include: [{ model: SaveGameState, limit: 10, order: [['createdAt', 'desc']] }],
-			}).then((game: SaveGame | null) => {
-				if (!game) {
-					throw notFound('save not found');
-				}
-
-				return omit({
-					...game.toJSON(),
-					current: game.states.length ? transformSave(request.auth.credentials.user.id, game.states[0]) : null,
-					states: game.states.map(i => transformSave(request.auth.credentials.user.id, i)),
-				}, ['userId', 'updatedAt']);
+				order: [['savedAt', 'DESC']],
+				limit: 10,
+			}).then((games: SaveGameState[]) => {
+				return {
+					slot: request.params.slot,
+					current: games.length ? transformSave(request.auth.credentials.user.id, games[0]) : null,
+					states: games.map(i => transformSave(request.auth.credentials.user.id, i)),
+				};
 			});
 		},
 	});

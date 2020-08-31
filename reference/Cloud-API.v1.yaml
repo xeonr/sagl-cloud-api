@@ -14,7 +14,8 @@ info:
     - GTA Configuration
     - Game/SAMP Screenshots
 servers:
-  - url: "http://127.0.0.1:8000"
+  - url: "https://cloud-api.sagl.app/v1"
+    description: Production
 paths:
   /account:
     get:
@@ -354,15 +355,20 @@ paths:
                   type: string
                   description: "Server address, including port"
                 serverPassword:
-                  type:
-                    - string
-                    - "null"
+                  oneOf:
+                    - type: string
+                    - type: "null"
+                      properties: {}
                 rconPassword:
-                  type:
-                    - string
-                    - "null"
+                  oneOf:
+                    - type: string
+                      properties: {}
+                    - type: "null"
+                      properties: {}
               required:
                 - address
+                - serverPassword
+                - rconPassword
             examples:
               example-1:
                 value:
@@ -391,7 +397,7 @@ paths:
         required: true
         description: File to interact with
     get:
-      summary: Get comfig
+      summary: Get config
       tags:
         - Saves
       responses:
@@ -458,7 +464,7 @@ paths:
       description: Store configuration
   /saves:
     get:
-      summary: Store a game save
+      summary: Get game saves
       tags:
         - Saves
       responses:
@@ -469,13 +475,17 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/GameSave"
+                  $ref: "#/components/schemas/GameSaveState"
       operationId: get-saves
       security:
         - JWT: []
       description: Returns all game saves an account has
+      parameters:
+        - schema:
+            type: string
+          in: header
     post:
-      summary: ""
+      summary: Store a game save
       operationId: post-saves
       responses:
         "200":
@@ -498,29 +508,46 @@ paths:
             schema:
               type: object
               properties:
-                saveId:
-                  type: string
+                slot:
+                  type: number
                   description: "Optional save id to store on. If missing, a new save will be created."
-                "":
+                  minimum: 1
+                  maximum: 8
+                name:
                   type: string
                 version:
                   type: string
                 completed:
-                  type: string
+                  type: number
                 savedAt:
                   type: string
                 file:
                   type: string
                   description: Multipart file
+                computerName:
+                  type: string
+                computerId:
+                  type: string
+              required:
+                - slot
+                - name
+                - version
+                - completed
+                - savedAt
+                - file
+                - computerName
+                - computerId
         description: ""
       description: Upload a game save
       tags:
         - Saves
-  "/saves/{uuid}":
+  "/saves/{slot}":
     parameters:
       - schema:
-          type: string
-        name: uuid
+          type: number
+          minimum: 1
+          maximum: 8
+        name: slot
         in: path
         required: true
     get:
@@ -543,56 +570,56 @@ paths:
                     states:
                       - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
                         name: test
-                        version: "Version 2.0 German"
+                        version: Version 2.0 German
                         completed: 10
                         savedAt: "2011-11-11T00:00:00.000Z"
                         createdAt: "2020-08-30T05:38:32.903Z"
                         cdnUrl: "https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host"
                       - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
                         name: test
-                        version: "Version 2.0 German"
+                        version: Version 2.0 German
                         completed: 10
                         savedAt: "2011-11-11T00:00:00.000Z"
                         createdAt: "2020-08-30T05:38:31.811Z"
                         cdnUrl: "https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host"
                       - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
                         name: test
-                        version: "Version 2.0 German"
+                        version: Version 2.0 German
                         completed: 10
                         savedAt: "2011-11-11T00:00:00.000Z"
                         createdAt: "2020-08-30T05:38:30.832Z"
                         cdnUrl: "https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host"
                       - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
                         name: test
-                        version: "Version 2.0 German"
+                        version: Version 2.0 German
                         completed: 10
                         savedAt: "2011-11-11T00:00:00.000Z"
                         createdAt: "2020-08-30T05:38:30.085Z"
                         cdnUrl: "https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host"
                       - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
                         name: test
-                        version: "Version 2.0 German"
+                        version: Version 2.0 German
                         completed: 10
                         savedAt: "2011-11-11T00:00:00.000Z"
                         createdAt: "2020-08-30T05:38:29.233Z"
                         cdnUrl: "https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host"
                       - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
                         name: test
-                        version: "Version 2.0 German"
+                        version: Version 2.0 German
                         completed: 10
                         savedAt: "2011-11-11T00:00:00.000Z"
                         createdAt: "2020-08-30T05:38:28.521Z"
                         cdnUrl: "https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host"
                       - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
                         name: test
-                        version: "Version 2.0 German"
+                        version: Version 2.0 German
                         completed: 10
                         savedAt: "2011-11-11T00:00:00.000Z"
                         createdAt: "2020-08-30T05:38:27.043Z"
                         cdnUrl: "https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host"
                       - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
                         name: test
-                        version: "Version 2.0 German"
+                        version: Version 2.0 German
                         completed: 10
                         savedAt: "2011-11-11T00:00:00.000Z"
                         createdAt: "2020-08-30T05:29:52.121Z"
@@ -600,34 +627,11 @@ paths:
                     current:
                       hash: FD3D158ECA755C791B6890AAAB62C6C005698862
                       name: test
-                      version: "Version 2.0 German"
+                      version: Version 2.0 German
                       completed: 10
                       savedAt: "2011-11-11T00:00:00.000Z"
                       createdAt: "2020-08-30T05:38:32.903Z"
                       cdnUrl: "https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host"
-        "404":
-          description: save not found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  statusCode:
-                    type: number
-                  error:
-                    type: string
-                required:
-                  - message
-                  - statusCode
-                  - error
-              examples:
-                Not found:
-                  value:
-                    statusCode: 404
-                    error: Not Found
-                    message: save not found
       operationId: get-saves-uuid
       description: Get a save and its history
       security:
@@ -657,6 +661,9 @@ components:
           updatedAt: "2020-08-30T03:31:42.994Z"
           sampUsername: LukeT
       additionalProperties: false
+      description: An authenticated user.
+      x-tags:
+        - Account
       properties:
         id:
           type: string
@@ -677,8 +684,12 @@ components:
           type: string
           format: date-time
         sampUsername:
-          type: string
           description: The configured username for SAMP
+          oneOf:
+            - type: string
+              properties: {}
+            - type: "null"
+              properties: {}
       required:
         - id
         - discordUsername
@@ -686,9 +697,7 @@ components:
         - email
         - createdAt
         - updatedAt
-      description: An authenticated user.
-      x-tags:
-        - Account
+        - sampUsername
     PersonalServer:
       title: PersonalServer
       type: object
@@ -710,6 +719,8 @@ components:
           createdAt: "2019-08-24T14:15:22Z"
           updatedAt: "2019-08-24T14:15:22Z"
           rconPassword: null
+      x-tags:
+        - Servers
       properties:
         id:
           type: string
@@ -720,9 +731,11 @@ components:
         address:
           type: string
         serverPassword:
-          type:
-            - string
-            - "null"
+          oneOf:
+            - type: string
+              properties: {}
+            - type: "null"
+              properties: {}
         createdAt:
           type: string
           format: date-time
@@ -730,18 +743,17 @@ components:
           type: string
           format: date-time
         rconPassword:
-          type:
-            - string
-            - "null"
+          oneOf:
+            - properties: {}
+              type: string
+            - type: "null"
+              properties: {}
       required:
         - id
         - hash
         - address
-        - serverPassword
         - createdAt
         - updatedAt
-      x-tags:
-        - Servers
     GalleryImage:
       title: GalleryImage
       type: object
@@ -784,42 +796,38 @@ components:
       type: object
       x-examples:
         Example:
-          id: "1234"
+          slot: 1
           createdAt: "2020-08-30T22:02:15.603Z"
           current:
+            computerId: "1234"
+            computerName: Jeff
             hash: "1234"
             name: "1234"
-            version: "Version 2.0 German"
+            version: Version 2.0 German
             completed: 100
             savedAt: "2020-08-30T22:02:15.603Z"
             createdAt: "2020-08-30T22:02:15.603Z"
             cdnUrl: "https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/12/1234?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200830%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200830T215931Z&X-Amz-Expires=900&X-Amz-Signature=961cdead0eedc9ad9ffb76373131ec6fd0501340cb93c27640c676e5d67781b6&X-Amz-SignedHeaders=host"
+      description: A game save
+      x-tags:
+        - Saves
       properties:
-        id:
-          type: string
-          format: uuid
-        createdAt:
-          type: string
+        slot:
+          type: number
+          minimum: 1
+          maximum: 8
         current:
           oneOf:
             - type: "null"
-              properties: {}
             - $ref: "#/components/schemas/GameSaveState"
         states:
-          type:
-            - string
-            - array
+          type: array
           description: History of saves. This is only provided if accessed directly.
           items:
             $ref: "#/components/schemas/GameSaveState"
       required:
-        - id
-        - createdAt
+        - slot
         - current
-        - current
-      description: A game save
-      x-tags:
-        - Saves
     GameSaveState:
       title: GameSaveState
       type: object
@@ -830,7 +838,7 @@ components:
         Example:
           hash: "1234"
           name: "1234"
-          version: "Version 2.0 German"
+          version: Version 2.0 German
           completed: 100
           savedAt: "2020-08-30T22:02:15.603Z"
           createdAt: "2020-08-30T22:02:15.603Z"
@@ -857,13 +865,20 @@ components:
         cdnUrl:
           type: string
           format: uri
+        computerId:
+          type: string
+        computerName:
+          type: string
       required:
         - hash
         - name
+        - version
         - completed
         - savedAt
         - createdAt
         - cdnUrl
+        - computerId
+        - computerName
   securitySchemes:
     JWT:
       type: http
