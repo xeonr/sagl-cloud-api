@@ -1,19 +1,20 @@
 openapi: 3.0.0
 info:
-  title: Cloud API
-  version: '1.0'
+  title: 'SA: GL - Cloud API'
+  version: '1'
   contact:
     name: Luke Thompson
-    url: 'https://sagl.xeonr.com'
-    email: luke@xeonr.com
-  description: SAGL Cloud API
+  description: |-
+    The SAGL API provides cloud support for GTA San Andreas.
+
+
+    The following is sycned:
+    - Active game saves
+    - SAMP configuration
+    - GTA Configuration
+    - Game/SAMP Screenshots
 servers:
-  - url: 'http://localhost:8000/v1'
-    description: Development
-  - url: 'https://sagl.xeonr.com/v1'
-    description: Stage
-  - url: 'https://cloud-api.salauncher.app/v1'
-    description: Production
+  - url: 'http://127.0.0.1:8000'
 paths:
   /account:
     get:
@@ -455,6 +456,170 @@ paths:
                   type: object
         description: Value is any object representing the config
       description: Store configuration
+  /saves:
+    get:
+      summary: Store a game save
+      tags:
+        - Saves
+      responses:
+        '200':
+          description: Game saves
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GameSave'
+      operationId: get-saves
+      security:
+        - JWT: []
+      description: Returns all game saves an account has
+    post:
+      summary: ''
+      operationId: post-saves
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Game Save ID
+                required:
+                  - id
+      security:
+        - JWT: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                saveId:
+                  type: string
+                  description: 'Optional save id to store on. If missing, a new save will be created.'
+                '':
+                  type: string
+                completed:
+                  type: string
+                savedAt:
+                  type: string
+                file:
+                  type: string
+                  description: Multipart file
+        description: ''
+      description: Upload a game save
+      tags:
+        - Saves
+  '/saves/{uuid}':
+    parameters:
+      - schema:
+          type: string
+        name: uuid
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameSave'
+              examples:
+                Game Save:
+                  value:
+                    id: ebd611dc-858e-46e5-82a4-f3e55f84308a
+                    createdAt: '2020-08-30T05:26:38.816Z'
+                    states:
+                      - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
+                        name: test
+                        completed: 10
+                        savedAt: '2011-11-11T00:00:00.000Z'
+                        createdAt: '2020-08-30T05:38:32.903Z'
+                        cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host'
+                      - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
+                        name: test
+                        completed: 10
+                        savedAt: '2011-11-11T00:00:00.000Z'
+                        createdAt: '2020-08-30T05:38:31.811Z'
+                        cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host'
+                      - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
+                        name: test
+                        completed: 10
+                        savedAt: '2011-11-11T00:00:00.000Z'
+                        createdAt: '2020-08-30T05:38:30.832Z'
+                        cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host'
+                      - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
+                        name: test
+                        completed: 10
+                        savedAt: '2011-11-11T00:00:00.000Z'
+                        createdAt: '2020-08-30T05:38:30.085Z'
+                        cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host'
+                      - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
+                        name: test
+                        completed: 10
+                        savedAt: '2011-11-11T00:00:00.000Z'
+                        createdAt: '2020-08-30T05:38:29.233Z'
+                        cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host'
+                      - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
+                        name: test
+                        completed: 10
+                        savedAt: '2011-11-11T00:00:00.000Z'
+                        createdAt: '2020-08-30T05:38:28.521Z'
+                        cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host'
+                      - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
+                        name: test
+                        completed: 10
+                        savedAt: '2011-11-11T00:00:00.000Z'
+                        createdAt: '2020-08-30T05:38:27.043Z'
+                        cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host'
+                      - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
+                        name: test
+                        completed: 10
+                        savedAt: '2011-11-11T00:00:00.000Z'
+                        createdAt: '2020-08-30T05:29:52.121Z'
+                        cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host'
+                    current:
+                      hash: FD3D158ECA755C791B6890AAAB62C6C005698862
+                      name: test
+                      completed: 10
+                      savedAt: '2011-11-11T00:00:00.000Z'
+                      createdAt: '2020-08-30T05:38:32.903Z'
+                      cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host'
+        '404':
+          description: save not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  statusCode:
+                    type: number
+                  error:
+                    type: string
+                required:
+                  - message
+                  - statusCode
+                  - error
+              examples:
+                Not found:
+                  value:
+                    statusCode: 404
+                    error: Not Found
+                    message: save not found
+      operationId: get-saves-uuid
+      description: Get a save and its history
+      security:
+        - JWT: []
 components:
   schemas:
     User:
@@ -563,6 +728,8 @@ components:
         - serverPassword
         - createdAt
         - updatedAt
+      x-tags:
+        - Servers
     GalleryImage:
       title: GalleryImage
       type: object
@@ -600,6 +767,85 @@ components:
           cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/gallery/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/cc3d556d-2e7b-447d-beb1-a58158926b1b.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200830%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200830T203835Z&X-Amz-Expires=900&X-Amz-Signature=eabac91c6542c38808ba3a7139c29b95782a30cf50965b21ed9b8667a87c0dee&X-Amz-SignedHeaders=host'
       x-tags:
         - Gallery
+    GameSave:
+      title: GameSave
+      type: object
+      x-examples:
+        Example:
+          id: '1234'
+          createdAt: '2020-08-30T22:02:15.603Z'
+          current:
+            hash: '1234'
+            name: '1234'
+            completed: 100
+            savedAt: '2020-08-30T22:02:15.603Z'
+            createdAt: '2020-08-30T22:02:15.603Z'
+            cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/12/1234?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200830%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200830T215931Z&X-Amz-Expires=900&X-Amz-Signature=961cdead0eedc9ad9ffb76373131ec6fd0501340cb93c27640c676e5d67781b6&X-Amz-SignedHeaders=host'
+      properties:
+        id:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+        current:
+          oneOf:
+            - type: 'null'
+              properties: {}
+            - $ref: '#/components/schemas/GameSaveState'
+        states:
+          type:
+            - string
+            - array
+          description: History of saves. This is only provided if accessed directly.
+          items:
+            $ref: '#/components/schemas/GameSaveState'
+      required:
+        - id
+        - createdAt
+        - current
+        - current
+      description: A game save
+    GameSaveState:
+      title: GameSaveState
+      type: object
+      x-tags:
+        - Saves
+      description: Game save at a point in time
+      x-examples:
+        Example:
+          hash: '1234'
+          name: '1234'
+          completed: 100
+          savedAt: '2020-08-30T22:02:15.603Z'
+          createdAt: '2020-08-30T22:02:15.603Z'
+          cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/12/1234?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200830%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200830T215931Z&X-Amz-Expires=900&X-Amz-Signature=961cdead0eedc9ad9ffb76373131ec6fd0501340cb93c27640c676e5d67781b6&X-Amz-SignedHeaders=host'
+      properties:
+        hash:
+          type: string
+          description: SHA1 of the game file
+        name:
+          type: string
+        completed:
+          type: number
+          description: Percentage of game completion
+          minimum: 0
+          maximum: 1
+        savedAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        cdnUrl:
+          type: string
+          format: uri
+      required:
+        - hash
+        - name
+        - completed
+        - savedAt
+        - createdAt
+        - cdnUrl
   securitySchemes:
     JWT:
       type: http
