@@ -355,15 +355,21 @@ paths:
                   type: string
                   description: 'Server address, including port'
                 serverPassword:
+                  oneOf:
+                    - {}
                   type:
                     - string
                     - 'null'
                 rconPassword:
+                  oneOf:
+                    - properties: {}
                   type:
                     - string
                     - 'null'
               required:
                 - address
+                - serverPassword
+                - rconPassword
             examples:
               example-1:
                 value:
@@ -392,7 +398,7 @@ paths:
         required: true
         description: File to interact with
     get:
-      summary: Get comfig
+      summary: Get config
       tags:
         - Saves
       responses:
@@ -502,17 +508,23 @@ paths:
                 saveId:
                   type: string
                   description: 'Optional save id to store on. If missing, a new save will be created.'
-                '':
+                name:
                   type: string
                 version:
                   type: string
                 completed:
-                  type: string
+                  type: number
                 savedAt:
                   type: string
                 file:
                   type: string
                   description: Multipart file
+              required:
+                - name
+                - version
+                - completed
+                - savedAt
+                - file
         description: ''
       description: Upload a game save
       tags:
@@ -658,6 +670,9 @@ components:
           updatedAt: '2020-08-30T03:31:42.994Z'
           sampUsername: LukeT
       additionalProperties: false
+      description: An authenticated user.
+      x-tags:
+        - Account
       properties:
         id:
           type: string
@@ -678,8 +693,10 @@ components:
           type: string
           format: date-time
         sampUsername:
-          type: string
           description: The configured username for SAMP
+          type:
+            - string
+            - 'null'
       required:
         - id
         - discordUsername
@@ -687,9 +704,6 @@ components:
         - email
         - createdAt
         - updatedAt
-      description: An authenticated user.
-      x-tags:
-        - Account
     PersonalServer:
       title: PersonalServer
       type: object
@@ -711,6 +725,8 @@ components:
           createdAt: '2019-08-24T14:15:22Z'
           updatedAt: '2019-08-24T14:15:22Z'
           rconPassword: null
+      x-tags:
+        - Servers
       properties:
         id:
           type: string
@@ -721,6 +737,8 @@ components:
         address:
           type: string
         serverPassword:
+          oneOf:
+            - properties: {}
           type:
             - string
             - 'null'
@@ -731,6 +749,8 @@ components:
           type: string
           format: date-time
         rconPassword:
+          oneOf:
+            - properties: {}
           type:
             - string
             - 'null'
@@ -738,11 +758,8 @@ components:
         - id
         - hash
         - address
-        - serverPassword
         - createdAt
         - updatedAt
-      x-tags:
-        - Servers
     GalleryImage:
       title: GalleryImage
       type: object
@@ -861,6 +878,7 @@ components:
       required:
         - hash
         - name
+        - version
         - completed
         - savedAt
         - createdAt
