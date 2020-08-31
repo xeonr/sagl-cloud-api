@@ -58,6 +58,7 @@ export const routes: RouterFn = (router: Server): void => {
 			validate: {
 				payload: {
 					name: Joi.string().required(),
+					version: Joi.string().required(),
 					completed: Joi.number().required(),
 					savedAt: Joi.date().required(),
 					file: Joi.any().required(),
@@ -98,7 +99,7 @@ export const routes: RouterFn = (router: Server): void => {
 			await S3.upload(getSavePath(request.auth.credentials.user.id, hash), createReadStream(request.payload.file.path));
 
 			await SaveGameState.create({
-				...pick(request.payload, ['name', 'completed', 'savedAt']),
+				...pick(request.payload, ['name', 'version', 'completed', 'savedAt']),
 				hash,
 				saveGameId: save.id,
 			});

@@ -45,6 +45,18 @@ const routes: ((router: Server) => void)[] = [
 		models: [`${__dirname}/models`],
 	}); // tslint:disable-line
 
+	// Point to docs.
+	server.route({
+		method: 'GET',
+		path: '/',
+		options: {
+			auth: false,
+		},
+		handler(_: Request, h: ResponseToolkit) {
+			return h.redirect('https://sagl.stoplight.io/docs/cloud-api/reference/Cloud-API.v1.yaml');
+		},
+	});
+
 	await db.sync();
 
 	server.validator(Joi);

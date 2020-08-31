@@ -17,6 +17,9 @@ export class SaveGameState extends Model<SaveGameState> {
 	public name: string;
 
 	@Column
+	public version: string;
+
+	@Column
 	public completed: number;
 
 	@Column
