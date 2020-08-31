@@ -1,0 +1,861 @@
+openapi: 3.0.0
+info:
+  title: 'SA: GL - Cloud API'
+  version: '1'
+  contact:
+    name: Luke Thompson
+  description: |-
+    The SAGL API provides cloud support for GTA San Andreas.
+
+
+    The following is sycned:
+    - Active game saves
+    - SAMP configuration
+    - GTA Configuration
+    - Game/SAMP Screenshots
+servers:
+  - url: 'http://127.0.0.1:8000'
+paths:
+  /account:
+    get:
+      summary: Get account
+      tags:
+        - Account
+      operationId: get-account
+      description: Returns the currently authenticated account
+      parameters: []
+      security:
+        - JWT: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    patch:
+      summary: Update account
+      operationId: update-account
+      description: Set account level properties
+      parameters: []
+      security:
+        - JWT: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sampUsername:
+                  type: string
+                  description: Username for SAMP
+              required:
+                - sampUsername
+            examples:
+              Example:
+                value:
+                  sampUsername: LukeT
+        description: Update user
+      tags:
+        - Account
+  /auth:
+    get:
+      summary: Initialise authentication
+      tags:
+        - Auth
+      responses:
+        '200':
+          description: Success page
+        '301':
+          description: Redirect to discord
+          headers:
+            Location:
+              schema:
+                type: string
+              description: Discord destination
+      operationId: get-auth
+      description: |-
+        Login through discord.
+
+        For an app flow, you should direct the user to this input with state set to a unique UUID value you know. You can then poll POST /auth for the authentication token.
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+          in: query
+          name: state
+          description: A unique value to identify this request
+          required: true
+        - schema:
+            type: string
+          in: query
+          name: code
+          description: Code provided from discord for the oauth flow
+    post:
+      summary: Convert state to JWT
+      operationId: convert-auth
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  jwt:
+                    type: string
+                    description: The authentication token to pass as a header
+                required:
+                  - jwt
+              examples:
+                Success:
+                  value:
+                    jwt: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+        '403':
+          description: Unable to convert state token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  statusCode:
+                    type: number
+                  error:
+                    type: string
+                required:
+                  - message
+                  - statusCode
+                  - error
+              examples:
+                No authentication:
+                  value:
+                    statusCode: 403
+                    error: Forbidden
+                    message: No such authentication attempt
+      description: |-
+        Convert a state token into an authentication token
+
+        The JWT should be passed as the header `Authorization: Bearer {token}`
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                state:
+                  type: string
+                  format: uuid
+              required:
+                - state
+            examples:
+              Example:
+                value:
+                  state: 0e231ca7-8c83-44ad-9df9-f0699a512c67
+        description: ''
+      tags:
+        - Auth
+  /gallery:
+    get:
+      summary: Get gallery images
+      tags:
+        - Gallery
+      responses:
+        '200':
+          description: Uploaded images
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GalleryImage'
+              examples:
+                Example image:
+                  value:
+                    - id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
+                      uploadedAt: '2011-11-11T00:00:00.000Z'
+                      source: samp
+                      createdAt: '2020-08-30T19:19:50.660Z'
+                      cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/gallery/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/cc3d556d-2e7b-447d-beb1-a58158926b1b.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200830%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200830T203835Z&X-Amz-Expires=900&X-Amz-Signature=eabac91c6542c38808ba3a7139c29b95782a30cf50965b21ed9b8667a87c0dee&X-Amz-SignedHeaders=host'
+      operationId: get-gallery
+      description: Get all assets uploaded to the gallery
+      parameters:
+        - schema:
+            type: string
+            example: samp
+          in: query
+          name: source
+          description: The source of the image
+      security:
+        - JWT: []
+    post:
+      summary: Upload gallery image
+      operationId: post-gallery
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GalleryImage'
+              examples:
+                example-1:
+                  value:
+                    id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
+                    source: string
+                    uploadedAt: '2019-08-24T14:15:22Z'
+                    createdAt: '2019-08-24T14:15:22Z'
+                    cdnUrl: 'http://example.com'
+      description: Upload an image to the gallery
+      security:
+        - JWT: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: object
+                  description: Multipart file
+                source:
+                  type: string
+                  description: 'Source of the file, e.g samp or gta'
+                uploadedAt:
+                  type: string
+                  description: Time the file was created - this should be read from the file.
+              required:
+                - file
+                - source
+                - uploadedAt
+            examples:
+              Example upload:
+                value:
+                  file: {}
+                  source: string
+                  uploadedAt: string
+        description: ''
+      tags:
+        - Gallery
+    parameters: []
+  '/gallery/{uuid}':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: uuid
+        in: path
+        description: ''
+        required: true
+    delete:
+      summary: Delete gallery image
+      operationId: delete-gallery-uuid
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Gallery image not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  statusCode:
+                    type: number
+                  error:
+                    type: string
+                required:
+                  - message
+                  - statusCode
+                  - error
+              examples:
+                Not found:
+                  value:
+                    statusCode: 403
+                    error: Forbidden
+                    message: Gallery image not found
+      security:
+        - JWT: []
+      tags:
+        - Gallery
+      description: Delete a gallery image by its id
+  /servers/personal:
+    get:
+      summary: Get all servers
+      tags:
+        - Servers
+      responses:
+        '200':
+          description: Return personal server
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PersonalServer'
+      operationId: get-servers-personal
+      description: Returns all servers the user has storecd
+      security:
+        - JWT: []
+    parameters: []
+  '/servers/personal/{hash}':
+    parameters:
+      - schema:
+          type: string
+          minLength: 40
+          maxLength: 40
+          pattern: '^[A-Z]+$'
+        name: hash
+        in: path
+        required: true
+        description: 'SHA1 of the server name with the port, lowercased'
+    put:
+      summary: Store a server
+      tags:
+        - Servers
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalServer'
+              examples:
+                example-1:
+                  value:
+                    id: 5f538c39-e160-4c5f-bfc4-37c42f1405fe
+                    hash: 0346549F60931DBBEEDE735AC242F18A0AF6DA5F
+                    address: 'example.org:7777'
+                    serverPassword: null
+                    rconPassword: null
+                    createdAt: '2020-08-30T04:08:49.015Z'
+                    updatedAt: '2020-08-30T04:09:03.437Z'
+      operationId: put-servers-personal-hash
+      description: Store a server record with credentials.
+      security:
+        - JWT: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                address:
+                  type: string
+                  description: 'Server address, including port'
+                serverPassword:
+                  type:
+                    - string
+                    - 'null'
+                rconPassword:
+                  type:
+                    - string
+                    - 'null'
+              required:
+                - address
+            examples:
+              example-1:
+                value:
+                  address: string
+                  serverPassword: null
+                  rconPassword: null
+    delete:
+      summary: Remove a server
+      tags:
+        - Servers
+      responses:
+        '204':
+          description: No Content
+      operationId: delete-servers-personal-hash
+      security:
+        - JWT: []
+      description: Remove a remembered server
+  '/config/{file}':
+    parameters:
+      - schema:
+          type: string
+          enum:
+            - gta
+        name: file
+        in: path
+        required: true
+        description: File to interact with
+    get:
+      summary: Get comfig
+      tags:
+        - Saves
+      responses:
+        '200':
+          description: Stored value
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples:
+                Example:
+                  value: {}
+        '404':
+          description: Config key not set
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  statusCode:
+                    type: number
+                  error:
+                    type: string
+                required:
+                  - message
+                  - statusCode
+                  - error
+              examples:
+                No authentication:
+                  value:
+                    statusCode: 404
+                    error: Not Found
+                    message: Config key not set
+      operationId: get-config-file
+      description: Get the current configuration
+    put:
+      summary: Store config
+      tags:
+        - Saves
+      responses:
+        '200':
+          description: Stored value
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples:
+                Example:
+                  value: {}
+      operationId: put-config-file
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: object
+        description: Value is any object representing the config
+      description: Store configuration
+  /saves:
+    get:
+      summary: Store a game save
+      tags:
+        - Saves
+      responses:
+        '200':
+          description: Game saves
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GameSave'
+      operationId: get-saves
+      security:
+        - JWT: []
+      description: Returns all game saves an account has
+    post:
+      summary: ''
+      operationId: post-saves
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Game Save ID
+                required:
+                  - id
+      security:
+        - JWT: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                saveId:
+                  type: string
+                  description: 'Optional save id to store on. If missing, a new save will be created.'
+                '':
+                  type: string
+                completed:
+                  type: string
+                savedAt:
+                  type: string
+                file:
+                  type: string
+                  description: Multipart file
+        description: ''
+      description: Upload a game save
+      tags:
+        - Saves
+  '/saves/{uuid}':
+    parameters:
+      - schema:
+          type: string
+        name: uuid
+        in: path
+        required: true
+    get:
+      summary: Get a single save
+      tags:
+        - Saves
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameSave'
+              examples:
+                Game Save:
+                  value:
+                    id: ebd611dc-858e-46e5-82a4-f3e55f84308a
+                    createdAt: '2020-08-30T05:26:38.816Z'
+                    states:
+                      - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
+                        name: test
+                        completed: 10
+                        savedAt: '2011-11-11T00:00:00.000Z'
+                        createdAt: '2020-08-30T05:38:32.903Z'
+                        cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host'
+                      - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
+                        name: test
+                        completed: 10
+                        savedAt: '2011-11-11T00:00:00.000Z'
+                        createdAt: '2020-08-30T05:38:31.811Z'
+                        cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host'
+                      - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
+                        name: test
+                        completed: 10
+                        savedAt: '2011-11-11T00:00:00.000Z'
+                        createdAt: '2020-08-30T05:38:30.832Z'
+                        cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host'
+                      - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
+                        name: test
+                        completed: 10
+                        savedAt: '2011-11-11T00:00:00.000Z'
+                        createdAt: '2020-08-30T05:38:30.085Z'
+                        cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host'
+                      - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
+                        name: test
+                        completed: 10
+                        savedAt: '2011-11-11T00:00:00.000Z'
+                        createdAt: '2020-08-30T05:38:29.233Z'
+                        cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host'
+                      - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
+                        name: test
+                        completed: 10
+                        savedAt: '2011-11-11T00:00:00.000Z'
+                        createdAt: '2020-08-30T05:38:28.521Z'
+                        cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host'
+                      - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
+                        name: test
+                        completed: 10
+                        savedAt: '2011-11-11T00:00:00.000Z'
+                        createdAt: '2020-08-30T05:38:27.043Z'
+                        cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host'
+                      - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
+                        name: test
+                        completed: 10
+                        savedAt: '2011-11-11T00:00:00.000Z'
+                        createdAt: '2020-08-30T05:29:52.121Z'
+                        cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host'
+                    current:
+                      hash: FD3D158ECA755C791B6890AAAB62C6C005698862
+                      name: test
+                      completed: 10
+                      savedAt: '2011-11-11T00:00:00.000Z'
+                      createdAt: '2020-08-30T05:38:32.903Z'
+                      cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host'
+        '404':
+          description: save not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  statusCode:
+                    type: number
+                  error:
+                    type: string
+                required:
+                  - message
+                  - statusCode
+                  - error
+              examples:
+                Not found:
+                  value:
+                    statusCode: 404
+                    error: Not Found
+                    message: save not found
+      operationId: get-saves-uuid
+      description: Get a save and its history
+      security:
+        - JWT: []
+components:
+  schemas:
+    User:
+      type: object
+      title: User
+      x-examples:
+        Account without SAMP:
+          id: ba949cd8-ec3c-40a2-9cb8-a1dcd388d226
+          discordUsername: Luke
+          discordDiscriminator: '0269'
+          discordId: '95531787442192384'
+          email: test@example.com
+          createdAt: '2020-08-30T03:31:42.994Z'
+          updatedAt: '2020-08-30T03:31:42.994Z'
+          sampUsername: null
+        Account with SAMP:
+          id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
+          discordUsername: Luke
+          discordDiscriminator: '0269'
+          discordId: '95531787442192384'
+          email: test@example.com
+          createdAt: '2020-08-30T03:31:42.994Z'
+          updatedAt: '2020-08-30T03:31:42.994Z'
+          sampUsername: LukeT
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: uuid
+        discordUsername:
+          type: string
+        discordDiscriminator:
+          type: string
+          maxLength: 4
+          minLength: 4
+          example: '0001'
+        email:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        sampUsername:
+          type: string
+          description: The configured username for SAMP
+      required:
+        - id
+        - discordUsername
+        - discordDiscriminator
+        - email
+        - createdAt
+        - updatedAt
+      description: An authenticated user.
+      x-tags:
+        - Account
+    PersonalServer:
+      title: PersonalServer
+      type: object
+      description: A remembered server unique to this user.
+      x-examples:
+        Example:
+          id: 5f538c39-e160-4c5f-bfc4-37c42f1405fe
+          hash: 0346549F60931DBBEEDE735AC242F18A0AF6DA5F
+          address: 'example.org:7777'
+          serverPassword: null
+          rconPassword: null
+          createdAt: '2020-08-30T04:08:49.015Z'
+          updatedAt: '2020-08-30T04:09:03.437Z'
+        example-2:
+          id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
+          hash: string
+          address: string
+          serverPassword: null
+          createdAt: '2019-08-24T14:15:22Z'
+          updatedAt: '2019-08-24T14:15:22Z'
+          rconPassword: null
+      properties:
+        id:
+          type: string
+          format: uuid
+        hash:
+          type: string
+          description: 'Hash of the address, used to identify this'
+        address:
+          type: string
+        serverPassword:
+          type:
+            - string
+            - 'null'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        rconPassword:
+          type:
+            - string
+            - 'null'
+      required:
+        - id
+        - hash
+        - address
+        - serverPassword
+        - createdAt
+        - updatedAt
+      x-tags:
+        - Servers
+    GalleryImage:
+      title: GalleryImage
+      type: object
+      description: An uploaded image to the gallery
+      properties:
+        id:
+          type: string
+          format: uuid
+        source:
+          type: string
+          description: |
+            The image source (e.g samp or gta)
+        uploadedAt:
+          type: string
+          format: date-time
+          description: This is the time the image was created. This may be before createdAt
+        createdAt:
+          type: string
+          format: date-time
+        cdnUrl:
+          type: string
+          format: uri
+      required:
+        - id
+        - source
+        - uploadedAt
+        - createdAt
+        - cdnUrl
+      x-examples:
+        Example Image:
+          id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
+          uploadedAt: '2011-11-11T00:00:00.000Z'
+          source: samp
+          createdAt: '2020-08-30T19:19:50.660Z'
+          cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/gallery/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/cc3d556d-2e7b-447d-beb1-a58158926b1b.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200830%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200830T203835Z&X-Amz-Expires=900&X-Amz-Signature=eabac91c6542c38808ba3a7139c29b95782a30cf50965b21ed9b8667a87c0dee&X-Amz-SignedHeaders=host'
+      x-tags:
+        - Gallery
+    GameSave:
+      title: GameSave
+      type: object
+      x-examples:
+        Example:
+          id: '1234'
+          createdAt: '2020-08-30T22:02:15.603Z'
+          current:
+            hash: '1234'
+            name: '1234'
+            completed: 100
+            savedAt: '2020-08-30T22:02:15.603Z'
+            createdAt: '2020-08-30T22:02:15.603Z'
+            cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/12/1234?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200830%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200830T215931Z&X-Amz-Expires=900&X-Amz-Signature=961cdead0eedc9ad9ffb76373131ec6fd0501340cb93c27640c676e5d67781b6&X-Amz-SignedHeaders=host'
+      properties:
+        id:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+        current:
+          oneOf:
+            - type: 'null'
+              properties: {}
+            - $ref: '#/components/schemas/GameSaveState'
+        states:
+          type:
+            - string
+            - array
+          description: History of saves. This is only provided if accessed directly.
+          items:
+            $ref: '#/components/schemas/GameSaveState'
+      required:
+        - id
+        - createdAt
+        - current
+        - current
+      description: A game save
+      x-tags:
+        - Saves
+    GameSaveState:
+      title: GameSaveState
+      type: object
+      x-tags:
+        - Saves
+      description: Game save at a point in time
+      x-examples:
+        Example:
+          hash: '1234'
+          name: '1234'
+          completed: 100
+          savedAt: '2020-08-30T22:02:15.603Z'
+          createdAt: '2020-08-30T22:02:15.603Z'
+          cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/12/1234?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200830%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200830T215931Z&X-Amz-Expires=900&X-Amz-Signature=961cdead0eedc9ad9ffb76373131ec6fd0501340cb93c27640c676e5d67781b6&X-Amz-SignedHeaders=host'
+      properties:
+        hash:
+          type: string
+          description: SHA1 of the game file
+        name:
+          type: string
+        completed:
+          type: number
+          description: Percentage of game completion
+          minimum: 0
+          maximum: 1
+        savedAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        cdnUrl:
+          type: string
+          format: uri
+      required:
+        - hash
+        - name
+        - completed
+        - savedAt
+        - createdAt
+        - cdnUrl
+  securitySchemes:
+    JWT:
+      type: http
+      scheme: bearer
+tags:
+  - name: Account
+  - name: Auth
+  - name: Gallery
+  - name: Servers
+  - name: Saves
