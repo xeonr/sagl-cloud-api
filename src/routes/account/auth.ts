@@ -35,6 +35,7 @@ function createRedirect(state: string): string {
 		+ `client_id=${get('discord.clientId')}`
 		+ `&redirect_uri=${get('discord.redirectUri')}`
 		+ `&response_type=code`
+		+ `&prompt=none`
 		+ `&state=${state}`
 		+ `&scope=${(get<string[]>('discord.scopes')).join(' ')}`;
 }
