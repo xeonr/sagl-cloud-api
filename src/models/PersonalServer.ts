@@ -23,6 +23,9 @@ export class PersonalServer extends Model<PersonalServer> {
 	public description: number;
 
 	@Column
+	public order: number;
+
+	@Column
 	public serverPassword: string | null;
 
 	@Column

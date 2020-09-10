@@ -23,6 +23,7 @@ export const routes: RouterFn = (router: Server): void => {
 				where: {
 					userId: request.auth.credentials.user.id,
 				},
+				order: [['order', 'ASC']]
 			});
 		},
 	});
@@ -66,9 +67,10 @@ export const routes: RouterFn = (router: Server): void => {
 				payload: {
 					address: Joi.string().max(50).required(),
 					port: Joi.number().port().required(),
-					description: Joi.string().required(),
+					description: Joi.string().allow(null).required(),
 					serverPassword: Joi.string().allow(null).required(),
 					rconPassword: Joi.string().allow(null).required(),
+					order: Joi.number().required(),
 				},
 			},
 		},
