@@ -1,31 +1,39 @@
-import * as aws from 'aws-sdk';
-import { get } from 'config';
+import { Storage } from '@google-cloud/storage';
 import { Stream } from 'stream';
+import { get, has } from 'config';
 
-const s3: aws.S3 = new aws.S3({
-	accessKeyId: get('s3.accessKeyId'),
-	secretAccessKey: get('s3.secretAccessKey'),
-	endpoint: get('s3.endpoint'),
-	region: get('s3.region'),
-	s3ForcePathStyle: true,
-	signatureVersion: 'v4',
-});
+const storage = has('storage.auth') ? new Storage({
+	projectId: get('storage.auth.project_id'),
+	credentials: get('storage.auth'),
+}) : new Storage();
 
 class S3CDN {
-	public getUrl(key: string): string {
-		return s3.getSignedUrl('getObject', {
-			Bucket: get('s3.bucket'),
-			Key: key,
+	public async getUrl(key: string): Promise<string> {
+		const [url] = await storage.bucket(get('storage.bucket')).file(key).getSignedUrl({
+			version: 'v4',
+			action: 'read',
+			expires: Date.now() + 10 * 60 * 1000,
+		});
+
+		return url;
+	}
+
+	public async upload(key: string, data: Buffer, kind?: string): Promise<void> {
+		await storage.bucket(get('storage.bucket')).file(key).save(data, {
+			contentType: kind,
 		});
 	}
 
-	public async upload(key: string, data: Buffer | Stream, kind?: string): Promise<void> {
-		await s3.upload({
-			Key: key,
-			Body: data,
-			Bucket: get('s3.bucket'),
-			ContentType: kind,
-		}).promise();
+	public async uploadStream(key: string, data: Stream, kind?: string): Promise<void> {
+		const stream = storage.bucket(get('storage.bucket')).file(key).createWriteStream({
+			contentType: kind,
+		});
+
+		data.pipe(stream);
+
+		return new Promise((resolve) => {
+			data.once('end', resolve);
+		});
 	}
 }
 

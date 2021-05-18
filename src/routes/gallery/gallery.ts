@@ -33,10 +33,10 @@ export const routes: RouterFn = (router: Server): void => {
 				},
 				order: [['uploadedAt', 'desc']],
 			}).then((images: GalleryImage[]) => {
-				return images.map((image: GalleryImage) => omit({
+				return Promise.all(images.map(async (image: GalleryImage) => omit({
 					...image.toJSON(),
-					cdnUrl: S3.getUrl(getGalleryPath(request.auth.credentials.user.id, image.id, 'jpg')),
-				}, ['userId', 'updatedAt']));
+					cdnUrl: await S3.getUrl(getGalleryPath(request.auth.credentials.user.id, image.id, 'jpg')),
+				}, ['userId', 'updatedAt'])));
 			});
 		},
 	});
@@ -63,7 +63,7 @@ export const routes: RouterFn = (router: Server): void => {
 		},
 		handler: async (request: Request): Promise<Lifecycle.ReturnValue> => {
 			const id = v4();
-			await S3.upload(getGalleryPath(request.auth.credentials.user.id, id, 'jpg'), createReadStream(request.payload.file.path), 'image/jpeg');
+			await S3.uploadStream(getGalleryPath(request.auth.credentials.user.id, id, 'jpg'), createReadStream(request.payload.file.path), 'image/jpeg');
 
 			return omit((await GalleryImage.create({
 				id,

@@ -23,10 +23,10 @@ function hashFile(path: string): Promise<string> {
 	});
 }
 
-function transformSave(userId: string, save: SaveGameState) {
+async function transformSave(userId: string, save: SaveGameState) {
 	return {
 		...omit(save.toJSON(), ['saveGameId', 'id', 'updatedAt', 'slot']),
-		cdnUrl: S3.getUrl(getSavePath(userId, save.slot, save.hash)),
+		cdnUrl: await S3.getUrl(getSavePath(userId, save.slot, save.hash)),
 	};
 }
 
@@ -44,14 +44,14 @@ export const routes: RouterFn = (router: Server): void => {
 				},
 				order: [['savedAt', 'DESC']],
 				limit: 1,
-			}).then(([game]: SaveGameState[]) => {
+			}).then(async ([game]: SaveGameState[]) => {
 				if (!game) {
 					return null;
 				}
 
 				return {
 					slot: game.slot,
-					current: transformSave(request.auth.credentials.user.id, game),
+					current: await transformSave(request.auth.credentials.user.id, game),
 				};
 			}))).then(r => r.filter(i => i !== null));
 		},
@@ -84,11 +84,13 @@ export const routes: RouterFn = (router: Server): void => {
 		},
 		handler: async (request: Request): Promise<Lifecycle.ReturnValue> => {
 			const hash: string = await hashFile(request.payload.file.path);
-			await S3.upload(getSavePath(request.auth.credentials.user.id, request.payload.slot, hash), createReadStream(request.payload.file.path));
+			await S3.uploadStream(
+				getSavePath(request.auth.credentials.user.id, request.payload.slot, hash), createReadStream(request.payload.file.path),
+			);
 
 			return {
 				slot: request.payload.slot,
-				current: transformSave(request.auth.credentials.user.id, await SaveGameState.create({
+				current: await transformSave(request.auth.credentials.user.id, await SaveGameState.create({
 					...pick(request.payload, ['name', 'version', 'completed', 'savedAt', 'slot', 'computerName', 'computerId']),
 					hash,
 				})),
@@ -114,11 +116,11 @@ export const routes: RouterFn = (router: Server): void => {
 				},
 				order: [['savedAt', 'DESC']],
 				limit: 10,
-			}).then((games: SaveGameState[]) => {
+			}).then(async (games: SaveGameState[]) => {
 				return {
 					slot: request.params.slot,
-					current: games.length ? transformSave(request.auth.credentials.user.id, games[0]) : null,
-					states: games.map(i => transformSave(request.auth.credentials.user.id, i)),
+					current: games.length ? await transformSave(request.auth.credentials.user.id, games[0]) : null,
+					states: await Promise.all(games.map(i => transformSave(request.auth.credentials.user.id, i))),
 				};
 			});
 		},

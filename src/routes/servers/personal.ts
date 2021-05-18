@@ -23,7 +23,7 @@ export const routes: RouterFn = (router: Server): void => {
 				where: {
 					userId: request.auth.credentials.user.id,
 				},
-				order: [['order', 'ASC']]
+				order: [['order', 'ASC']],
 			});
 		},
 	});
