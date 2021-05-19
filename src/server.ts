@@ -37,11 +37,7 @@ const routes: ((router: Server) => void)[] = [
 
 (async (): Promise<void> => {
 	const db = new Sequelize({
-		database: 'some_db',
-		dialect: 'sqlite',
-		username: 'root',
-		password: '',
-		storage: './sql.db',
+		...get('database'),
 		models: [`${__dirname}/models`],
 	}); // tslint:disable-line
 
