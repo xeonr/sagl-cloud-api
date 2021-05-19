@@ -23,7 +23,7 @@ module.exports = {
 		"port": 6379
 	},
 	"storage": {
-		"bucket": "sagl-cdn",
+		"bucket": "cdn.sagl.app",
 		"auth": undefined
 	},
 	"web": {
