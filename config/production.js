@@ -18,9 +18,10 @@ module.exports = {
 		},
 	},
 	"redis": {
-		"host": "10.132.0.2",
+		"host": process.env.REDIS_HOST,
 		"keyPrefix": "sagl:",
-		"port": 6379
+		"port": process.env.REDIS_PORT,
+		"password": process.env.REDIS_PASS
 	},
 	"storage": {
 		"bucket": "cdn.sagl.app",
