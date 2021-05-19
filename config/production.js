@@ -18,7 +18,7 @@ module.exports = {
 		},
 	},
 	"redis": {
-		"host": "10.164.0.2",
+		"host": "10.132.0.2",
 		"keyPrefix": "sagl:",
 		"port": 6379
 	},
