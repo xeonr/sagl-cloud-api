@@ -55,6 +55,7 @@ function getToken(code: string): Promise<string> {
 }
 
 export interface IDiscordUser {
+	avatar: string;
 	username: string;
 	discriminator: string;
 	id: string;
@@ -68,9 +69,12 @@ function getUser(accessToken: string): Promise<IDiscordUser> {
 		},
 		responseType: 'json',
 	}).then((r: any): IDiscordUser => { // tslint:disable-line no-any
-		const { username, discriminator, id, email } = r.body;
+		const { username, discriminator, id, email, avatar } = r.body;
 
 		return {
+			avatar: avatar ?
+				`https://cdn.discordapp.com/avatars/${id}/${avatar}.png` :
+				`https://cdn.discordapp.com/embed/avatars/${discriminator}.png`,
 			username,
 			discriminator,
 			id,
@@ -102,6 +106,7 @@ export const routes: RouterFn = (router: Server): void => {
 			let account: User | null = await User.findOne({ where: { discordId: user.id } });
 			if (account) {
 				await account.update({
+					discordAvatar: user.avatar,
 					discordUsername: user.username,
 					discordDiscriminator: user.discriminator,
 					discordId: user.id,
@@ -110,6 +115,7 @@ export const routes: RouterFn = (router: Server): void => {
 			} else {
 				account = await User.create({
 					...(account ? account.toJSON() : {}),
+					discordAvatar: user.avatar,
 					discordUsername: user.username,
 					discordDiscriminator: user.discriminator,
 					discordId: user.id,

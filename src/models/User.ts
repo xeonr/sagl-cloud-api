@@ -9,6 +9,9 @@ export class User extends Model<User> {
 	public id: string = v4();
 
 	@Column
+	public discordAvatar: string;
+
+	@Column
 	public discordUsername: string;
 
 	@Column
@@ -20,7 +23,7 @@ export class User extends Model<User> {
 	@Column
 	public email: string;
 
-	@Column(DataType.JSON)
 	@Default({})
+	@Column(DataType.JSON)
 	public launcherSettings: object;
 }

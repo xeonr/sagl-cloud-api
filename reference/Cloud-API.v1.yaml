@@ -654,6 +654,7 @@ components:
       x-examples:
         Account without SAMP:
           id: ba949cd8-ec3c-40a2-9cb8-a1dcd388d226
+          discordAvatar: "https://cdn.discordapp.com/avatars/802368344816746496/edb42005fc7be6d8251c3f9d84ce3172.png"
           discordUsername: Luke
           discordDiscriminator: "0269"
           discordId: "95531787442192384"
@@ -664,6 +665,7 @@ components:
           launcherSettings: {}
         Account with SAMP:
           id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
+          discordAvatar: "https://cdn.discordapp.com/avatars/802368344816746496/edb42005fc7be6d8251c3f9d84ce3172.png"
           discordUsername: Luke
           discordDiscriminator: "0269"
           discordId: "95531787442192384"
@@ -680,6 +682,8 @@ components:
         id:
           type: string
           format: uuid
+        discordAvatar:
+          type: string
         discordUsername:
           type: string
         discordDiscriminator:
@@ -706,12 +710,14 @@ components:
               properties: {}
       required:
         - id
+        - discordAvatar
         - discordUsername
         - discordDiscriminator
         - email
         - createdAt
         - updatedAt
         - sampUsername
+        - launcherSettings
     PersonalServer:
       title: PersonalServer
       type: object
@@ -798,6 +804,7 @@ components:
         - uploadedAt
         - createdAt
         - cdnUrl
+        - fileHash
       x-examples:
         Example Image:
           id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
