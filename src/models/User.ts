@@ -1,4 +1,4 @@
-import { Column, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import { Column, DataType, Default, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
 import { v4 } from 'uuid';
 
 @Table
@@ -19,4 +19,8 @@ export class User extends Model<User> {
 
 	@Column
 	public email: string;
+
+	@Column(DataType.JSON)
+	@Default({})
+	public launcherSettings: object;
 }

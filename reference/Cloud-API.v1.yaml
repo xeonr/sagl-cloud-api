@@ -215,6 +215,7 @@ paths:
                     uploadedAt: "2019-08-24T14:15:22Z"
                     createdAt: "2019-08-24T14:15:22Z"
                     cdnUrl: "http://example.com"
+                    fileHash: 067a8012fb7868c53abef0c8ead53e295f371c59cb354d6053f9aab51964f54b
       description: Upload an image to the gallery
       security:
         - JWT: []
@@ -660,6 +661,7 @@ components:
           createdAt: "2020-08-30T03:31:42.994Z"
           updatedAt: "2020-08-30T03:31:42.994Z"
           sampUsername: null
+          launcherSettings: {}
         Account with SAMP:
           id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
           discordUsername: Luke
@@ -669,6 +671,7 @@ components:
           createdAt: "2020-08-30T03:31:42.994Z"
           updatedAt: "2020-08-30T03:31:42.994Z"
           sampUsername: LukeT
+          launcherSettings: {}
       additionalProperties: false
       description: An authenticated user.
       x-tags:
@@ -692,6 +695,8 @@ components:
         updatedAt:
           type: string
           format: date-time
+        launcherSettings:
+          type: object
         sampUsername:
           description: The configured username for SAMP
           oneOf:
@@ -781,6 +786,10 @@ components:
           type: string
           format: date-time
         cdnUrl:
+          type: string
+          format: uri
+        fileHash:
+          description: sha256 of the uploaded image.
           type: string
           format: uri
       required:

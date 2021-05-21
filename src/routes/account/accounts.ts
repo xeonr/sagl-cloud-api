@@ -21,6 +21,7 @@ export const routes: RouterFn = (router: Server): void => {
 			validate: {
 				payload: {
 					sampUsername: Joi.string().allow(null).required(),
+					launcherSettings: Joi.object().default({}),
 				},
 			},
 		},
