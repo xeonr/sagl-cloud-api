@@ -1,6 +1,7 @@
 import { notFound } from '@hapi/boom';
 import { Lifecycle, ResponseToolkit, Server } from '@hapi/hapi';
-import { createReadStream } from 'fs';
+import { createHash } from 'crypto';
+import { createReadStream, readFileSync } from 'fs';
 import Joi from 'joi';
 import { omit } from 'lodash';
 import { v4 } from 'uuid';
@@ -70,6 +71,7 @@ export const routes: RouterFn = (router: Server): void => {
 				source: request.payload.source,
 				uploadedAt: request.payload.uploadedAt.toISOString(),
 				userId: request.auth.credentials.user.id,
+				fileHash: createHash('sha256').update(readFileSync(request.payload.file.path)).digest('hex'),
 			})).toJSON(), ['userid']);
 		},
 	});

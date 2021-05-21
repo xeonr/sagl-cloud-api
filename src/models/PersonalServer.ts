@@ -20,7 +20,7 @@ export class PersonalServer extends Model<PersonalServer> {
 	public port: number;
 
 	@Column
-	public description: number;
+	public description: string;
 
 	@Column
 	public order: number;

@@ -19,6 +19,10 @@ if (process.env.NODE_ENV !== 'production') {
 	logger.add(new transports.Console({
 		format: format.combine(format.colorize(), logFormat),
 	}));
+} else {
+	logger.add(new transports.Console({
+		level: 'info',
+	}));
 }
 
 export const Logger = logger;

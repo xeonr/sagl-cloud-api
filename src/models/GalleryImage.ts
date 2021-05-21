@@ -16,6 +16,9 @@ export class GalleryImage extends Model<GalleryImage> {
 	@Column
 	public source: string;
 
+	@Column
+	public fileHash: string;
+
 	@BelongsTo((): typeof User => User)
 	public user: User;
 
