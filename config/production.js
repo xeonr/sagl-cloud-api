@@ -5,7 +5,8 @@ module.exports = {
 		"redirectUri": "https://cloud-api.sagl.app/v1/auth",
 		"scopes": [
 			"identify",
-			"email"
+			"email",
+			"guilds"
 		]
 	},
 	"database": {

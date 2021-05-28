@@ -1,6 +1,6 @@
 import { Storage } from '@google-cloud/storage';
-import { Stream } from 'stream';
 import { get, has } from 'config';
+import { Stream } from 'stream';
 
 const storage = has('storage.auth') ? new Storage({
 	projectId: get('storage.auth.project_id'),

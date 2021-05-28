@@ -21,6 +21,15 @@ export class User extends Model<User> {
 	public discordId: string;
 
 	@Column
+	public discordAccessToken: string;
+
+	@Column
+	public discordRefreshToken: string;
+
+	@Column(DataType.DATE)
+	public discordAccessExpiry: Date;
+
+	@Column
 	public email: string;
 
 	@Default({})

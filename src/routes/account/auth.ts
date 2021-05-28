@@ -40,7 +40,7 @@ function createRedirect(state: string): string {
 		+ `&scope=${(get<string[]>('discord.scopes')).join(' ')}`;
 }
 
-function getToken(code: string): Promise<string> {
+function getToken(code: string): Promise<{ accessToken: string; refreshToken: string; expiresAt: Date }> {
 	return got.post(`https://discord.com/api/oauth2/token`, {
 		form: {
 			client_id: get('discord.clientId'),
@@ -51,7 +51,11 @@ function getToken(code: string): Promise<string> {
 			code,
 		},
 		responseType: 'json',
-	}).then((r: any): string => r.body.access_token); // tslint:disable-line no-any
+	}).then((r: any) => ({ // tslint:disable-line no-any
+		accessToken: r.body.access_token,
+		refreshToken: r.body.refresh_token,
+		expiresAt: new Date(+new Date() + (r.body.expires_in * 1000)),
+	}));
 }
 
 export interface IDiscordUser {
@@ -101,7 +105,8 @@ export const routes: RouterFn = (router: Server): void => {
 				return h.redirect(createRedirect(request.query.state)).code(301);
 			}
 
-			const user: IDiscordUser = await getUser(await getToken(request.query.code));
+			const { accessToken, refreshToken, expiresAt } = await getToken(request.query.code);
+			const user: IDiscordUser = await getUser(accessToken);
 
 			let account: User | null = await User.findOne({ where: { discordId: user.id } });
 			if (account) {
@@ -110,6 +115,9 @@ export const routes: RouterFn = (router: Server): void => {
 					discordUsername: user.username,
 					discordDiscriminator: user.discriminator,
 					discordId: user.id,
+					discordAccessToken: accessToken,
+					discordRefreshToken: refreshToken,
+					discordAccessExpiry: expiresAt,
 					email: user.email,
 				});
 			} else {
@@ -118,6 +126,9 @@ export const routes: RouterFn = (router: Server): void => {
 					discordAvatar: user.avatar,
 					discordUsername: user.username,
 					discordDiscriminator: user.discriminator,
+					discordAccessToken: accessToken,
+					discordRefreshToken: refreshToken,
+					discordAccessExpiry: expiresAt,
 					discordId: user.id,
 					email: user.email,
 				});
