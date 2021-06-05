@@ -57,12 +57,14 @@ paths:
                 sampUsername:
                   type: string
                   description: Username for SAMP
-              required:
-                - sampUsername
+                launcherSettings:
+                  type: object
+                  description: Launcher settings
             examples:
               Example:
                 value:
                   sampUsername: LukeT
+                  launcherSettings: {}
         description: Update user
       tags:
         - Account
