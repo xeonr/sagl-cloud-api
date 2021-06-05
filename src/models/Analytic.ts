@@ -40,6 +40,9 @@ export class Analytic extends Model<Analytic> {
 	@Column(DataType.STRING)
 	public sampVersion: string;
 
+	@Column(DataType.STRING)
+	public ipAddress: string;
+
 	@BelongsTo((): typeof User => User)
 	public user: User;
 
