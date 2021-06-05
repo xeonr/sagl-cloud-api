@@ -3,6 +3,7 @@ import Joi from 'joi';
 import { post } from 'request-promise-native';
 
 import { Request } from '../../util/Auth';
+import { Logger } from '../../util/Logger';
 import { Analytic } from './../../models/Analytic';
 import { User } from './../../models/User';
 import { RouterFn } from './../../util/Types';
@@ -45,7 +46,7 @@ export const routes: RouterFn = (router: Server): void => {
 			validate: {
 				payload: Joi.object({
 					name: Joi.string().required(),
-					payload: Joi.object().required(),
+					payload: Joi.object().default({}),
 
 					timezone: Joi.string().required(),
 					osPlatform: Joi.string().required(),
@@ -63,8 +64,9 @@ export const routes: RouterFn = (router: Server): void => {
 			});
 
 			post('https://discord.com/api/webhooks/850523640893800449/RXT_F75zniUM12BvlQyx5mw5DNskSoUHgJ9ludvlOKXJn_NgXMMvCU7oF7bJiFVzomOv', {
+				json: true,
 				body: {
-					username: '👀',
+					username: '🧪',
 					content: `**Tracked new event: ${request.payload.name}**`,
 					embeds: [{
 						color: 15501868,
@@ -73,10 +75,12 @@ export const routes: RouterFn = (router: Server): void => {
 								return { name: i, value: `\`\`\`${JSON.stringify(analytic.toJSON()[i], null, 4)}\`\`\``, inline: false };
 							}
 
-							return { name: i, value: String(analytic.toJSON()[i]) };
+							return { name: i, value: String(analytic.toJSON()[i]), inline: true };
 						}),
 					}],
 				},
+			}).catch(err => {
+				Logger.warn('Unable to inform discord.', { err });
 			});
 
 			return {
