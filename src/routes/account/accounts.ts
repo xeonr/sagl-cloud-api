@@ -62,7 +62,7 @@ export const routes: RouterFn = (router: Server): void => {
 			const analytic = await Analytic.create({
 				...request.payload,
 				userId: request.auth.credentials ? request.auth.credentials.user.id : null,
-				ipAddress: request.info.remoteAddress,
+				ipAddress: request.headers['X-Appengine-User-IP'] ?? request.headers['X-Forwarded-For'] ?? request.info.remoteAddress,
 			});
 
 			const data: any = analytic.toJSON(); // tslint:disable-line
