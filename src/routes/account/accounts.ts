@@ -62,7 +62,7 @@ export const routes: RouterFn = (router: Server): void => {
 			const analytic = await Analytic.create({
 				...request.payload,
 				userId: request.auth.credentials ? request.auth.credentials.user.id : null,
-				ipAddress: request.headers['X-Appengine-User-IP'] ?? request.headers['X-Forwarded-For'] ?? request.info.remoteAddress,
+				ipAddress: request.headers['x-forwarded-for'] ?? request.info.remoteAddress,
 			});
 			console.log(JSON.stringify(request.headers));
 
