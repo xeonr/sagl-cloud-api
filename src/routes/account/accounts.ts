@@ -48,7 +48,7 @@ export const routes: RouterFn = (router: Server): void => {
 					name: Joi.string().required(),
 					payload: Joi.any().default({}),
 					machineId: Joi.string().required(),
-					metrics: Joi.object().required(),
+					metrics: Joi.any().required(),
 					timezone: Joi.string().required(),
 					osPlatform: Joi.string().required(),
 					osRelease: Joi.string().required(),
