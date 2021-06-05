@@ -64,6 +64,8 @@ export const routes: RouterFn = (router: Server): void => {
 				userId: request.auth.credentials ? request.auth.credentials.user.id : null,
 				ipAddress: request.headers['X-Appengine-User-IP'] ?? request.headers['X-Forwarded-For'] ?? request.info.remoteAddress,
 			});
+			console.log(JSON.stringify(request.headers));
+
 
 			const data: any = analytic.toJSON(); // tslint:disable-line
 
