@@ -64,6 +64,8 @@ export const routes: RouterFn = (router: Server): void => {
 				userId: request.auth.credentials ? request.auth.credentials.user.id : null,
 			});
 
+			delete analytic.metrics;
+
 			post('https://discord.com/api/webhooks/850523640893800449/RXT_F75zniUM12BvlQyx5mw5DNskSoUHgJ9ludvlOKXJn_NgXMMvCU7oF7bJiFVzomOv', {
 				json: true,
 				body: {
@@ -80,8 +82,8 @@ export const routes: RouterFn = (router: Server): void => {
 						}),
 					}],
 				},
-			}).catch(err => {
-				Logger.warn('Unable to inform discord.', { err });
+			}).catch((err: Error) => {
+				Logger.warn(`Unable to inform discord: ${err.message}`);
 			});
 
 			return {
