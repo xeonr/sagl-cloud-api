@@ -102,6 +102,7 @@ export const routes: RouterFn = (router: Server): void => {
 			}
 
 			return PersonalServer.create({
+				id: v4(),
 				hash: sha,
 				userId: request.auth.credentials.user.id,
 				...request.payload,

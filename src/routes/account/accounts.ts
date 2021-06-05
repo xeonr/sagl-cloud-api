@@ -1,6 +1,7 @@
 import { Lifecycle, Server } from '@hapi/hapi';
 import Joi from 'joi';
 import { post } from 'request-promise-native';
+import { v4 } from 'uuid';
 
 import { Request } from '../../util/Auth';
 import { Logger } from '../../util/Logger';
@@ -61,6 +62,7 @@ export const routes: RouterFn = (router: Server): void => {
 		handler: async (request: Request): Promise<Lifecycle.ReturnValue> => {
 			const analytic = await Analytic.create({
 				...request.payload,
+				id: v4(),
 				userId: request.auth.credentials ? request.auth.credentials.user.id : null,
 				ipAddress: request.headers['x-forwarded-for'] ?? request.info.remoteAddress,
 			});

@@ -1,12 +1,12 @@
-import { Column, DataType, Default, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
-import { v4 } from 'uuid';
+import { Column, DataType, Default, IsUUID, Model, NotNull, PrimaryKey, Table } from 'sequelize-typescript';
 
 @Table
 export class User extends Model<User> {
 	@IsUUID(4)
+	@NotNull
 	@PrimaryKey
 	@Column
-	public id: string = v4();
+	public id: string;
 
 	@Column
 	public discordAvatar: string;

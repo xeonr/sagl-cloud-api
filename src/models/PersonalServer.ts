@@ -1,14 +1,14 @@
-import { BelongsTo, Column, ForeignKey, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
-import { v4 } from 'uuid';
+import { BelongsTo, Column, ForeignKey, IsUUID, Model, NotNull, PrimaryKey, Table } from 'sequelize-typescript';
 
 import { User } from './User';
 
 @Table
 export class PersonalServer extends Model<PersonalServer> {
 	@IsUUID(4)
+	@NotNull
 	@PrimaryKey
 	@Column
-	public id: string = v4();
+	public id: string;
 
 	@Column
 	public hash: string;

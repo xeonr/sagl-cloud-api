@@ -4,6 +4,7 @@ import { get } from 'config';
 import got from 'got';
 import Joi from 'joi';
 import { sign } from 'jsonwebtoken';
+import { v4 } from 'uuid';
 
 import { User } from '../../models/User';
 import { Request } from '../../util/Auth';
@@ -122,6 +123,7 @@ export const routes: RouterFn = (router: Server): void => {
 				});
 			} else {
 				account = await User.create({
+					id: v4(),
 					...(account ? account.toJSON() : {}),
 					discordAvatar: user.avatar,
 					discordUsername: user.username,

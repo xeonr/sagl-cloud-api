@@ -3,6 +3,7 @@ import { createHash } from 'crypto';
 import { createReadStream } from 'fs';
 import Joi from 'joi';
 import { omit, pick } from 'lodash';
+import { v4 } from 'uuid';
 
 import { SaveGameState } from '../../models/SaveGameState';
 import { Request } from '../../util/Auth';
@@ -91,6 +92,7 @@ export const routes: RouterFn = (router: Server): void => {
 			return {
 				slot: request.payload.slot,
 				current: await transformSave(request.auth.credentials.user.id, await SaveGameState.create({
+					id: v4(),
 					...pick(request.payload, ['name', 'version', 'completed', 'savedAt', 'slot', 'computerName', 'computerId']),
 					hash,
 				})),

@@ -1,6 +1,7 @@
 import { notFound } from '@hapi/boom';
 import { Lifecycle, Server } from '@hapi/hapi';
 import Joi from 'joi';
+import { v4 } from 'uuid';
 
 import { GameConfig } from '../../models/GameConfig';
 import { Request } from '../../util/Auth';
@@ -61,6 +62,7 @@ export const routes: RouterFn = (router: Server): void => {
 					await config.update({ value: request.payload.value });
 				} else {
 					await GameConfig.create({
+						id: v4(),
 						name: request.params.file,
 						value: request.payload.value,
 						userId: request.auth.credentials.user.id,
