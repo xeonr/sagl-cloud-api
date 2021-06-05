@@ -64,7 +64,9 @@ export const routes: RouterFn = (router: Server): void => {
 				userId: request.auth.credentials ? request.auth.credentials.user.id : null,
 			});
 
-			delete analytic.metrics;
+			const data: any = analytic.toJSON(); // tslint:disable-line
+
+			delete data.metrics;
 
 			post('https://discord.com/api/webhooks/850523640893800449/RXT_F75zniUM12BvlQyx5mw5DNskSoUHgJ9ludvlOKXJn_NgXMMvCU7oF7bJiFVzomOv', {
 				json: true,
@@ -73,12 +75,12 @@ export const routes: RouterFn = (router: Server): void => {
 					content: `**Tracked new event: ${request.payload.name}**`,
 					embeds: [{
 						color: 15501868,
-						fields: Object.keys(analytic.toJSON()).map(i => {
-							if (typeof analytic.toJSON()[i] === 'object') {
-								return { name: i, value: `\`\`\`${JSON.stringify(analytic.toJSON()[i], null, 4)}\`\`\``, inline: false };
+						fields: Object.keys(data).map(i => {
+							if (typeof data[i] === 'object') {
+								return { name: i, value: `\`\`\`${JSON.stringify(data[i], null, 4)}\`\`\``, inline: false };
 							}
 
-							return { name: i, value: String(analytic.toJSON()[i]), inline: true };
+							return { name: i, value: String(data[i]), inline: true };
 						}),
 					}],
 				},
