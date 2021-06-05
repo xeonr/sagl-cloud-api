@@ -26,6 +26,12 @@ export class Analytic extends Model<Analytic> {
 	public osRelease: string;
 
 	@Column(DataType.STRING)
+	public machineId: string;
+
+	@Column(DataType.JSON)
+	public metrics: object;
+
+	@Column(DataType.STRING)
 	public osVersion: string;
 
 	@Column(DataType.STRING)
