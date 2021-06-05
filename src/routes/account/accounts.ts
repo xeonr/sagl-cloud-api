@@ -46,7 +46,7 @@ export const routes: RouterFn = (router: Server): void => {
 			validate: {
 				payload: Joi.object({
 					name: Joi.string().required(),
-					payload: Joi.object().default({}),
+					payload: Joi.any().default({}),
 
 					timezone: Joi.string().required(),
 					osPlatform: Joi.string().required(),
