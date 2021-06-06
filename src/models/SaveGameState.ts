@@ -1,13 +1,12 @@
-import { BelongsTo, Column, ForeignKey, IsUUID, Model, NotNull, PrimaryKey, Table } from 'sequelize-typescript';
+import { BelongsTo, Column, ForeignKey, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
 
 import { User } from './User';
 
 @Table
 export class SaveGameState extends Model<SaveGameState> {
 	@IsUUID(4)
-	@NotNull
 	@PrimaryKey
-	@Column
+	@Column({ allowNull: false })
 	public id: string;
 
 	@Column

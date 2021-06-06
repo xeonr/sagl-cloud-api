@@ -1,11 +1,10 @@
-import { Column, DataType, Default, IsUUID, Model, NotNull, PrimaryKey, Table } from 'sequelize-typescript';
+import { Column, DataType, Default, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
 
 @Table
 export class User extends Model<User> {
 	@IsUUID(4)
-	@NotNull
 	@PrimaryKey
-	@Column
+	@Column({ allowNull: false })
 	public id: string;
 
 	@Column
