@@ -31,6 +31,9 @@ export class User extends Model<User> {
 	@Column
 	public email: string;
 
+	@Column
+	public sampUsername: string;
+
 	@Default({})
 	@Column(DataType.JSON)
 	public launcherSettings: object;
