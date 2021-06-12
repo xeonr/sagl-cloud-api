@@ -8,6 +8,7 @@ import * as auth from './routes/account/auth';
 import * as gallery from './routes/gallery/gallery';
 import * as config from './routes/saves/config';
 import * as saves from './routes/saves/save';
+import * as discord from './routes/servers/discord';
 import * as mine from './routes/servers/personal';
 import { validateAuth } from './util/Auth';
 import { Logger } from './util/Logger';
@@ -33,6 +34,7 @@ const routes: ((router: Server) => void)[] = [
 	saves.routes,
 	gallery.routes,
 	config.routes,
+	discord.routes,
 ];
 
 (async (): Promise<void> => {

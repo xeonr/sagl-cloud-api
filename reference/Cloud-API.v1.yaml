@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
-  title: "SA: GL - Cloud API"
-  version: "1"
+  title: 'SA: GL - Cloud API'
+  version: '1'
   contact:
     name: Luke Thompson
   description: |-
@@ -14,7 +14,7 @@ info:
     - GTA Configuration
     - Game/SAMP Screenshots
 servers:
-  - url: "https://cloud-api.sagl.app/v1"
+  - url: 'https://cloud-api.sagl.app/v1'
     description: Production
 paths:
   /account:
@@ -28,12 +28,12 @@ paths:
       security:
         - JWT: []
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                $ref: '#/components/schemas/User'
     patch:
       summary: Update account
       operationId: update-account
@@ -42,12 +42,12 @@ paths:
       security:
         - JWT: []
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                $ref: '#/components/schemas/User'
       requestBody:
         content:
           application/json:
@@ -57,14 +57,12 @@ paths:
                 sampUsername:
                   type: string
                   description: Username for SAMP
-                launcherSettings:
-                  type: object
-                  description: Launcher settings
+              required:
+                - sampUsername
             examples:
               Example:
                 value:
                   sampUsername: LukeT
-                  launcherSettings: {}
         description: Update user
       tags:
         - Account
@@ -74,9 +72,9 @@ paths:
       tags:
         - Auth
       responses:
-        "200":
+        '200':
           description: Success page
-        "301":
+        '301':
           description: Redirect to discord
           headers:
             Location:
@@ -105,7 +103,7 @@ paths:
       summary: Convert state to JWT
       operationId: convert-auth
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -121,7 +119,7 @@ paths:
                 Success:
                   value:
                     jwt: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
-        "403":
+        '403':
           description: Unable to convert state token
           content:
             application/json:
@@ -163,7 +161,7 @@ paths:
               Example:
                 value:
                   state: 0e231ca7-8c83-44ad-9df9-f0699a512c67
-        description: ""
+        description: ''
       tags:
         - Auth
   /gallery:
@@ -172,22 +170,22 @@ paths:
       tags:
         - Gallery
       responses:
-        "200":
+        '200':
           description: Uploaded images
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/GalleryImage"
+                  $ref: '#/components/schemas/GalleryImage'
               examples:
                 Example image:
                   value:
                     - id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
-                      uploadedAt: "2011-11-11T00:00:00.000Z"
+                      uploadedAt: '2011-11-11T00:00:00.000Z'
                       source: samp
-                      createdAt: "2020-08-30T19:19:50.660Z"
-                      cdnUrl: "https://s3.eu-west-2.amazonaws.com/sagl-cdn/gallery/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/cc3d556d-2e7b-447d-beb1-a58158926b1b.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200830%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200830T203835Z&X-Amz-Expires=900&X-Amz-Signature=eabac91c6542c38808ba3a7139c29b95782a30cf50965b21ed9b8667a87c0dee&X-Amz-SignedHeaders=host"
+                      createdAt: '2020-08-30T19:19:50.660Z'
+                      cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/gallery/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/cc3d556d-2e7b-447d-beb1-a58158926b1b.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200830%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200830T203835Z&X-Amz-Expires=900&X-Amz-Signature=eabac91c6542c38808ba3a7139c29b95782a30cf50965b21ed9b8667a87c0dee&X-Amz-SignedHeaders=host'
       operationId: get-gallery
       description: Get all assets uploaded to the gallery
       parameters:
@@ -203,20 +201,20 @@ paths:
       summary: Upload gallery image
       operationId: post-gallery
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GalleryImage"
+                $ref: '#/components/schemas/GalleryImage'
               examples:
                 example-1:
                   value:
                     id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
                     source: string
-                    uploadedAt: "2019-08-24T14:15:22Z"
-                    createdAt: "2019-08-24T14:15:22Z"
-                    cdnUrl: "http://example.com"
+                    uploadedAt: '2019-08-24T14:15:22Z'
+                    createdAt: '2019-08-24T14:15:22Z'
+                    cdnUrl: 'http://example.com'
                     fileHash: 067a8012fb7868c53abef0c8ead53e295f371c59cb354d6053f9aab51964f54b
       description: Upload an image to the gallery
       security:
@@ -232,7 +230,7 @@ paths:
                   description: Multipart file
                 source:
                   type: string
-                  description: "Source of the file, e.g samp or gta"
+                  description: 'Source of the file, e.g samp or gta'
                 uploadedAt:
                   type: string
                   description: Time the file was created - this should be read from the file.
@@ -246,26 +244,26 @@ paths:
                   file: {}
                   source: string
                   uploadedAt: string
-        description: ""
+        description: ''
       tags:
         - Gallery
     parameters: []
-  "/gallery/{uuid}":
+  '/gallery/{uuid}':
     parameters:
       - schema:
           type: string
           format: uuid
         name: uuid
         in: path
-        description: ""
+        description: ''
         required: true
     delete:
       summary: Delete gallery image
       operationId: delete-gallery-uuid
       responses:
-        "204":
+        '204':
           description: No Content
-        "404":
+        '404':
           description: Gallery image not found
           content:
             application/json:
@@ -299,53 +297,53 @@ paths:
       tags:
         - Servers
       responses:
-        "200":
+        '200':
           description: Return personal server
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/PersonalServer"
+                  $ref: '#/components/schemas/PersonalServer'
       operationId: get-servers-personal
       description: Returns all servers the user has storecd
       security:
         - JWT: []
     parameters: []
-  "/servers/personal/{hash}":
+  '/servers/personal/{hash}':
     parameters:
       - schema:
           type: string
           minLength: 40
           maxLength: 40
-          pattern: "^[A-Z]+$"
+          pattern: '^[A-Z]+$'
         name: hash
         in: path
         required: true
-        description: "SHA1 of the server name with the port, lowercased"
+        description: 'SHA1 of the server name with the port, lowercased'
     put:
       summary: Store a server
       tags:
         - Servers
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PersonalServer"
+                $ref: '#/components/schemas/PersonalServer'
               examples:
                 example-1:
                   value:
                     id: 5f538c39-e160-4c5f-bfc4-37c42f1405fe
                     hash: 0346549F60931DBBEEDE735AC242F18A0AF6DA5F
-                    address: "example.org"
+                    address: example.org
                     description: test
                     port: 7777
                     serverPassword: null
                     rconPassword: null
-                    createdAt: "2020-08-30T04:08:49.015Z"
-                    updatedAt: "2020-08-30T04:09:03.437Z"
+                    createdAt: '2020-08-30T04:08:49.015Z'
+                    updatedAt: '2020-08-30T04:09:03.437Z'
       operationId: put-servers-personal-hash
       description: Store a server record with credentials.
       security:
@@ -358,22 +356,21 @@ paths:
               properties:
                 address:
                   type: string
-                  description: "Server address"
+                  description: Server address
                 serverPassword:
                   oneOf:
                     - type: string
-                    - type: "null"
+                    - type: 'null'
                 rconPassword:
                   oneOf:
                     - type: string
-                    - type: "null"
+                    - type: 'null'
                 port:
                   type: number
                   maximum: 65535
                   minimum: 0
                 description:
                   type: string
-
               required:
                 - address
                 - serverPassword
@@ -393,13 +390,13 @@ paths:
       tags:
         - Servers
       responses:
-        "204":
+        '204':
           description: No Content
       operationId: delete-servers-personal-hash
       security:
         - JWT: []
       description: Remove a remembered server
-  "/config/{file}":
+  '/config/{file}':
     parameters:
       - schema:
           type: string
@@ -414,7 +411,7 @@ paths:
       tags:
         - Saves
       responses:
-        "200":
+        '200':
           description: Stored value
           content:
             application/json:
@@ -424,7 +421,7 @@ paths:
               examples:
                 Example:
                   value: {}
-        "404":
+        '404':
           description: Config key not set
           content:
             application/json:
@@ -454,7 +451,7 @@ paths:
       tags:
         - Saves
       responses:
-        "200":
+        '200':
           description: Stored value
           content:
             application/json:
@@ -481,14 +478,14 @@ paths:
       tags:
         - Saves
       responses:
-        "200":
+        '200':
           description: Game saves
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/GameSaveState"
+                  $ref: '#/components/schemas/GameSaveState'
       operationId: get-saves
       security:
         - JWT: []
@@ -501,7 +498,7 @@ paths:
       summary: Store a game save
       operationId: post-saves
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -523,7 +520,7 @@ paths:
               properties:
                 slot:
                   type: number
-                  description: "Optional save id to store on. If missing, a new save will be created."
+                  description: 'Optional save id to store on. If missing, a new save will be created.'
                   minimum: 1
                   maximum: 8
                 name:
@@ -550,11 +547,11 @@ paths:
                 - file
                 - computerName
                 - computerId
-        description: ""
+        description: ''
       description: Upload a game save
       tags:
         - Saves
-  "/saves/{slot}":
+  '/saves/{slot}':
     parameters:
       - schema:
           type: number
@@ -568,13 +565,13 @@ paths:
       tags:
         - Saves
       responses:
-        "200":
+        '200':
           description: OK
           headers: {}
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GameSave"
+                $ref: '#/components/schemas/GameSave'
               examples:
                 Game Save:
                   value:
@@ -584,68 +581,279 @@ paths:
                         name: test
                         version: Version 2.0 German
                         completed: 10
-                        savedAt: "2011-11-11T00:00:00.000Z"
-                        createdAt: "2020-08-30T05:38:32.903Z"
-                        cdnUrl: "https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host"
+                        savedAt: '2011-11-11T00:00:00.000Z'
+                        createdAt: '2020-08-30T05:38:32.903Z'
+                        cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host'
                       - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
                         name: test
                         version: Version 2.0 German
                         completed: 10
-                        savedAt: "2011-11-11T00:00:00.000Z"
-                        createdAt: "2020-08-30T05:38:31.811Z"
-                        cdnUrl: "https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host"
+                        savedAt: '2011-11-11T00:00:00.000Z'
+                        createdAt: '2020-08-30T05:38:31.811Z'
+                        cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host'
                       - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
                         name: test
                         version: Version 2.0 German
                         completed: 10
-                        savedAt: "2011-11-11T00:00:00.000Z"
-                        createdAt: "2020-08-30T05:38:30.832Z"
-                        cdnUrl: "https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host"
+                        savedAt: '2011-11-11T00:00:00.000Z'
+                        createdAt: '2020-08-30T05:38:30.832Z'
+                        cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host'
                       - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
                         name: test
                         version: Version 2.0 German
                         completed: 10
-                        savedAt: "2011-11-11T00:00:00.000Z"
-                        createdAt: "2020-08-30T05:38:30.085Z"
-                        cdnUrl: "https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host"
+                        savedAt: '2011-11-11T00:00:00.000Z'
+                        createdAt: '2020-08-30T05:38:30.085Z'
+                        cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host'
                       - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
                         name: test
                         version: Version 2.0 German
                         completed: 10
-                        savedAt: "2011-11-11T00:00:00.000Z"
-                        createdAt: "2020-08-30T05:38:29.233Z"
-                        cdnUrl: "https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host"
+                        savedAt: '2011-11-11T00:00:00.000Z'
+                        createdAt: '2020-08-30T05:38:29.233Z'
+                        cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host'
                       - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
                         name: test
                         version: Version 2.0 German
                         completed: 10
-                        savedAt: "2011-11-11T00:00:00.000Z"
-                        createdAt: "2020-08-30T05:38:28.521Z"
-                        cdnUrl: "https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host"
+                        savedAt: '2011-11-11T00:00:00.000Z'
+                        createdAt: '2020-08-30T05:38:28.521Z'
+                        cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host'
                       - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
                         name: test
                         version: Version 2.0 German
                         completed: 10
-                        savedAt: "2011-11-11T00:00:00.000Z"
-                        createdAt: "2020-08-30T05:38:27.043Z"
-                        cdnUrl: "https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host"
+                        savedAt: '2011-11-11T00:00:00.000Z'
+                        createdAt: '2020-08-30T05:38:27.043Z'
+                        cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host'
                       - hash: FD3D158ECA755C791B6890AAAB62C6C005698862
                         name: test
                         version: Version 2.0 German
                         completed: 10
-                        savedAt: "2011-11-11T00:00:00.000Z"
-                        createdAt: "2020-08-30T05:29:52.121Z"
-                        cdnUrl: "https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host"
+                        savedAt: '2011-11-11T00:00:00.000Z'
+                        createdAt: '2020-08-30T05:29:52.121Z'
+                        cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host'
                     current:
                       hash: FD3D158ECA755C791B6890AAAB62C6C005698862
                       name: test
                       version: Version 2.0 German
                       completed: 1
-                      savedAt: "2011-11-11T00:00:00.000Z"
-                      createdAt: "2020-08-30T05:38:32.903Z"
-                      cdnUrl: "https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host"
+                      savedAt: '2011-11-11T00:00:00.000Z'
+                      createdAt: '2020-08-30T05:38:32.903Z'
+                      cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/FD/FD3D158ECA755C791B6890AAAB62C6C005698862?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200831%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200831T003907Z&X-Amz-Expires=900&X-Amz-Signature=d9d6ce668fe33cd1843bf88232b8c6d959fc096f879b5675ad2ff285eebc62f8&X-Amz-SignedHeaders=host'
       operationId: get-saves-uuid
       description: Get a save and its history
+      security:
+        - JWT: []
+  /servers/discord:
+    get:
+      summary: Get discord servers in common
+      tags:
+        - Servers
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                description: ''
+                minItems: 1
+                uniqueItems: true
+                items:
+                  type: object
+                  required:
+                    - id
+                    - address
+                    - name
+                    - isSupporter
+                    - isHosted
+                    - isPassworded
+                    - players
+                    - game
+                    - network
+                    - metadata
+                    - isOnline
+                    - snapshotAt
+                  properties:
+                    id:
+                      type: string
+                      minLength: 1
+                    address:
+                      type: string
+                      minLength: 1
+                    name:
+                      type: string
+                      minLength: 1
+                    isSupporter:
+                      type: boolean
+                    isHosted:
+                      type: boolean
+                    isPassworded:
+                      type: boolean
+                    players:
+                      type: object
+                      properties:
+                        current:
+                          type: number
+                        max:
+                          type: number
+                        hitSAMPLimit:
+                          type: boolean
+                      required:
+                        - current
+                        - max
+                        - hitSAMPLimit
+                    game:
+                      type: object
+                      properties:
+                        language:
+                          type: string
+                        gamemode:
+                          type: string
+                          minLength: 1
+                        lagcomp:
+                          type: string
+                          minLength: 1
+                        mapname:
+                          type: string
+                          minLength: 1
+                        version:
+                          type: string
+                          minLength: 1
+                        weather:
+                          type: string
+                          minLength: 1
+                        worldtime:
+                          type: string
+                          minLength: 1
+                      required:
+                        - language
+                        - gamemode
+                        - lagcomp
+                        - mapname
+                        - version
+                        - weather
+                        - worldtime
+                    network:
+                      type: object
+                      properties:
+                        country:
+                          type: string
+                          minLength: 1
+                        asn:
+                          type: number
+                        asnName:
+                          type: string
+                          minLength: 1
+                      required:
+                        - country
+                        - asn
+                        - asnName
+                    metadata:
+                      type: object
+                      properties:
+                        icon:
+                          type: string
+                          minLength: 1
+                        discordGuild:
+                          type: string
+                          minLength: 1
+                        socials:
+                          type: object
+                          properties:
+                            url:
+                              type: string
+                              minLength: 1
+                            twitter:
+                              type: string
+                              minLength: 1
+                            discord:
+                              type: string
+                              minLength: 1
+                          required:
+                            - url
+                            - twitter
+                            - discord
+                      required:
+                        - icon
+                        - discordGuild
+                        - socials
+                    isOnline:
+                      type: boolean
+                    snapshotAt:
+                      type: string
+                      minLength: 1
+                x-examples:
+                  example-1:
+                    - id: c9f02ae1-14cd-4030-a5d3-dc7c601377bd
+                      address: '127.0.0.1:7777'
+                      name: 'SA:GL Test Server'
+                      isSupporter: true
+                      isHosted: false
+                      isPassworded: true
+                      players:
+                        current: 0
+                        max: 50
+                        hitSAMPLimit: false
+                      game:
+                        language: ''
+                        gamemode: 'SA:GL'
+                        lagcomp: 'On'
+                        mapname: San Andreas
+                        version: 0.3.7-R2
+                        weather: '10'
+                        worldtime: '03:00'
+                      network:
+                        country: DE
+                        asn: 24940
+                        asnName: Hetzner Online GmbH
+                      metadata:
+                        icon: 'https://cdn.discordapp.com/icons/792507195018706975/ca1a68409d9708993b222ba31f2cd66f.png'
+                        discordGuild: '792507195018706975'
+                        socials:
+                          url: 'https://sagl.app'
+                          twitter: xeonrapp
+                          discord: testtest
+                      isOnline: true
+                      snapshotAt: '2021-06-12T03:30:13.000Z'
+              examples:
+                example-1:
+                  value:
+                    - id: c9f02ae1-14cd-4030-a5d3-dc7c601377bd
+                      address: '127.0.0.1:7777'
+                      name: 'SA:GL Test Server'
+                      isSupporter: true
+                      isHosted: false
+                      isPassworded: true
+                      players:
+                        current: 0
+                        max: 50
+                        hitSAMPLimit: false
+                      game:
+                        language: ''
+                        gamemode: 'SA:GL'
+                        lagcomp: 'On'
+                        mapname: San Andreas
+                        version: 0.3.7-R2
+                        weather: '10'
+                        worldtime: '03:00'
+                      network:
+                        country: DE
+                        asn: 24940
+                        asnName: Hetzner Online GmbH
+                      metadata:
+                        icon: 'https://cdn.discordapp.com/icons/792507195018706975/ca1a68409d9708993b222ba31f2cd66f.png'
+                        discordGuild: '792507195018706975'
+                        socials:
+                          url: 'https://sagl.app'
+                          twitter: xeonrapp
+                          discord: test
+                      isOnline: true
+                      snapshotAt: '2021-06-12T03:30:13.000Z'
+      operationId: get-servers-discord
+      description: 'Returns SA:GL tracked servers which have discord guilds in common with the authenticated user.'
+      parameters: []
       security:
         - JWT: []
 components:
@@ -656,24 +864,24 @@ components:
       x-examples:
         Account without SAMP:
           id: ba949cd8-ec3c-40a2-9cb8-a1dcd388d226
-          discordAvatar: "https://cdn.discordapp.com/avatars/802368344816746496/edb42005fc7be6d8251c3f9d84ce3172.png"
+          discordAvatar: 'https://cdn.discordapp.com/avatars/802368344816746496/edb42005fc7be6d8251c3f9d84ce3172.png'
           discordUsername: Luke
-          discordDiscriminator: "0269"
-          discordId: "95531787442192384"
+          discordDiscriminator: '0269'
+          discordId: '95531787442192384'
           email: test@example.com
-          createdAt: "2020-08-30T03:31:42.994Z"
-          updatedAt: "2020-08-30T03:31:42.994Z"
+          createdAt: '2020-08-30T03:31:42.994Z'
+          updatedAt: '2020-08-30T03:31:42.994Z'
           sampUsername: null
           launcherSettings: {}
         Account with SAMP:
           id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
-          discordAvatar: "https://cdn.discordapp.com/avatars/802368344816746496/edb42005fc7be6d8251c3f9d84ce3172.png"
+          discordAvatar: 'https://cdn.discordapp.com/avatars/802368344816746496/edb42005fc7be6d8251c3f9d84ce3172.png'
           discordUsername: Luke
-          discordDiscriminator: "0269"
-          discordId: "95531787442192384"
+          discordDiscriminator: '0269'
+          discordId: '95531787442192384'
           email: test@example.com
-          createdAt: "2020-08-30T03:31:42.994Z"
-          updatedAt: "2020-08-30T03:31:42.994Z"
+          createdAt: '2020-08-30T03:31:42.994Z'
+          updatedAt: '2020-08-30T03:31:42.994Z'
           sampUsername: LukeT
           launcherSettings: {}
       additionalProperties: false
@@ -692,7 +900,7 @@ components:
           type: string
           maxLength: 4
           minLength: 4
-          example: "0001"
+          example: '0001'
         email:
           type: string
         createdAt:
@@ -708,7 +916,7 @@ components:
           oneOf:
             - type: string
               properties: {}
-            - type: "null"
+            - type: 'null'
               properties: {}
       required:
         - id
@@ -733,8 +941,8 @@ components:
           port: 7777
           serverPassword: null
           rconPassword: null
-          createdAt: "2020-08-30T04:08:49.015Z"
-          updatedAt: "2020-08-30T04:09:03.437Z"
+          createdAt: '2020-08-30T04:08:49.015Z'
+          updatedAt: '2020-08-30T04:09:03.437Z'
       x-tags:
         - Servers
       properties:
@@ -743,13 +951,13 @@ components:
           format: uuid
         hash:
           type: string
-          description: "Hash of the address, used to identify this"
+          description: 'Hash of the address, used to identify this'
         address:
           type: string
         serverPassword:
           oneOf:
             - type: string
-            - type: "null"
+            - type: 'null'
         createdAt:
           type: string
           format: date-time
@@ -759,7 +967,7 @@ components:
         rconPassword:
           oneOf:
             - type: string
-            - type: "null"
+            - type: 'null'
         port:
           type: number
           maximum: 65535
@@ -810,10 +1018,10 @@ components:
       x-examples:
         Example Image:
           id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
-          uploadedAt: "2011-11-11T00:00:00.000Z"
+          uploadedAt: '2011-11-11T00:00:00.000Z'
           source: samp
-          createdAt: "2020-08-30T19:19:50.660Z"
-          cdnUrl: "https://s3.eu-west-2.amazonaws.com/sagl-cdn/gallery/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/cc3d556d-2e7b-447d-beb1-a58158926b1b.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200830%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200830T203835Z&X-Amz-Expires=900&X-Amz-Signature=eabac91c6542c38808ba3a7139c29b95782a30cf50965b21ed9b8667a87c0dee&X-Amz-SignedHeaders=host"
+          createdAt: '2020-08-30T19:19:50.660Z'
+          cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/gallery/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/cc3d556d-2e7b-447d-beb1-a58158926b1b.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200830%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200830T203835Z&X-Amz-Expires=900&X-Amz-Signature=eabac91c6542c38808ba3a7139c29b95782a30cf50965b21ed9b8667a87c0dee&X-Amz-SignedHeaders=host'
       x-tags:
         - Gallery
     GameSave:
@@ -822,17 +1030,17 @@ components:
       x-examples:
         Example:
           slot: 1
-          createdAt: "2020-08-30T22:02:15.603Z"
+          createdAt: '2020-08-30T22:02:15.603Z'
           current:
-            computerId: "1234"
+            computerId: '1234'
             computerName: Jeff
-            hash: "1234"
-            name: "1234"
+            hash: '1234'
+            name: '1234'
             version: Version 2.0 German
             completed: 100
-            savedAt: "2020-08-30T22:02:15.603Z"
-            createdAt: "2020-08-30T22:02:15.603Z"
-            cdnUrl: "https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/12/1234?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200830%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200830T215931Z&X-Amz-Expires=900&X-Amz-Signature=961cdead0eedc9ad9ffb76373131ec6fd0501340cb93c27640c676e5d67781b6&X-Amz-SignedHeaders=host"
+            savedAt: '2020-08-30T22:02:15.603Z'
+            createdAt: '2020-08-30T22:02:15.603Z'
+            cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/12/1234?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200830%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200830T215931Z&X-Amz-Expires=900&X-Amz-Signature=961cdead0eedc9ad9ffb76373131ec6fd0501340cb93c27640c676e5d67781b6&X-Amz-SignedHeaders=host'
       description: A game save
       x-tags:
         - Saves
@@ -843,13 +1051,13 @@ components:
           maximum: 8
         current:
           oneOf:
-            - type: "null"
-            - $ref: "#/components/schemas/GameSaveState"
+            - type: 'null'
+            - $ref: '#/components/schemas/GameSaveState'
         states:
           type: array
           description: History of saves. This is only provided if accessed directly.
           items:
-            $ref: "#/components/schemas/GameSaveState"
+            $ref: '#/components/schemas/GameSaveState'
       required:
         - slot
         - current
@@ -861,13 +1069,13 @@ components:
       description: Game save at a point in time
       x-examples:
         Example:
-          hash: "1234"
-          name: "1234"
+          hash: '1234'
+          name: '1234'
           version: Version 2.0 German
           completed: 100
-          savedAt: "2020-08-30T22:02:15.603Z"
-          createdAt: "2020-08-30T22:02:15.603Z"
-          cdnUrl: "https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/12/1234?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200830%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200830T215931Z&X-Amz-Expires=900&X-Amz-Signature=961cdead0eedc9ad9ffb76373131ec6fd0501340cb93c27640c676e5d67781b6&X-Amz-SignedHeaders=host"
+          savedAt: '2020-08-30T22:02:15.603Z'
+          createdAt: '2020-08-30T22:02:15.603Z'
+          cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/12/1234?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200830%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200830T215931Z&X-Amz-Expires=900&X-Amz-Signature=961cdead0eedc9ad9ffb76373131ec6fd0501340cb93c27640c676e5d67781b6&X-Amz-SignedHeaders=host'
       properties:
         hash:
           type: string

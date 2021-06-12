@@ -28,6 +28,6 @@ export async function validateAuth(token: IToken): Promise<{ isValid: boolean; c
 		return { isValid: false };
 	}
 
-	return { isValid: true, credentials: { user: user.toJSON() } };
+	return { isValid: true, credentials: { user: user } };
 
 }
