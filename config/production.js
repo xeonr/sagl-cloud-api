@@ -32,5 +32,6 @@ module.exports = {
 		"jwtToken": process.env.JWT_SECRET,
 		"host": "0.0.0.0",
 		"port": process.env.PORT,
-	}
+	},
+	"saglServerApi": "https://server-api.sagl.app"
 }
