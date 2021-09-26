@@ -31,13 +31,13 @@ const page = `
 <html>
 `;
 
-function createRedirect(state: string): string {
+function createRedirect(state: string, redirectUri: string = ''): string {
 	return 'https://discord.com/api/oauth2/authorize?'
 		+ `client_id=${get('discord.clientId')}`
 		+ `&redirect_uri=${get('discord.redirectUri')}`
 		+ `&response_type=code`
 		+ `&prompt=none`
-		+ `&state=${state}`
+		+ `&state=${state}:${Buffer.from(redirectUri).toString('hex')}`
 		+ `&scope=${(get<string[]>('discord.scopes')).join(' ')}`;
 }
 
@@ -96,15 +96,22 @@ export const routes: RouterFn = (router: Server): void => {
 			auth: false,
 			validate: {
 				query: {
+					redirectUri: Joi.string().optional(),
 					code: Joi.string().optional(),
-					state: Joi.string().uuid({ version: 'uuidv4' }).required(),
+					state: Joi.string().required(),
 				},
 			},
 		},
 		handler: async (request: Request, h: ResponseToolkit): Promise<Lifecycle.ReturnValue> => {
 			if (!request.query.code) {
+				if (request.query.redirectUri) {
+					return { redirectUrl: createRedirect(request.query.state, request.query.redirectUri) };
+				}
+
 				return h.redirect(createRedirect(request.query.state)).code(301);
 			}
+
+			const [state, redirectUri] = request.query.state.split(':');
 
 			const { accessToken, refreshToken, expiresAt } = await getToken(request.query.code);
 			const user: IDiscordUser = await getUser(accessToken);
@@ -136,7 +143,11 @@ export const routes: RouterFn = (router: Server): void => {
 				});
 			}
 
-			await redisPub.setex(`auth:${request.query.state}`, 60, JSON.stringify({ userId: account.id! }));
+			await redisPub.setex(`auth:${state}`, 60, JSON.stringify({ userId: account.id! }));
+
+			if (redirectUri) {
+				return h.redirect(redirectUri);
+			}
 
 			return page.trim();
 		},
