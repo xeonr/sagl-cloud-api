@@ -146,7 +146,7 @@ export const routes: RouterFn = (router: Server): void => {
 			await redisPub.setex(`auth:${state}`, 60, JSON.stringify({ userId: account.id! }));
 
 			if (redirectUri) {
-				return h.redirect(redirectUri);
+				return h.redirect(Buffer.from(redirectUri, 'hex').toString());
 			}
 
 			return page.trim();
