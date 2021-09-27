@@ -872,6 +872,7 @@ components:
           createdAt: '2020-08-30T03:31:42.994Z'
           updatedAt: '2020-08-30T03:31:42.994Z'
           sampUsername: null
+          whitelisted: true
           launcherSettings: {}
         Account with SAMP:
           id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
@@ -884,6 +885,7 @@ components:
           updatedAt: '2020-08-30T03:31:42.994Z'
           sampUsername: LukeT
           launcherSettings: {}
+          whitelisted: true
       additionalProperties: false
       description: An authenticated user.
       x-tags:
@@ -911,6 +913,8 @@ components:
           format: date-time
         launcherSettings:
           type: object
+        whitelisted:
+          type: boolean
         sampUsername:
           description: The configured username for SAMP
           oneOf:
@@ -928,6 +932,7 @@ components:
         - updatedAt
         - sampUsername
         - launcherSettings
+        - whitelisted
     PersonalServer:
       title: PersonalServer
       type: object

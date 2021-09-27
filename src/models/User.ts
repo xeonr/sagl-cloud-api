@@ -37,4 +37,8 @@ export class User extends Model<User> {
 	@Default({})
 	@Column(DataType.JSON)
 	public launcherSettings: object;
+
+	@Default(false)
+	@Column
+	public whitelisted: boolean = false;
 }
