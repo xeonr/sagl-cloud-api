@@ -40,5 +40,5 @@ export class User extends Model<User> {
 
 	@Default(false)
 	@Column
-	public whitelisted: boolean = false;
+	public whitelisted: boolean;
 }
