@@ -1,4 +1,4 @@
-import { forbidden, proxyAuthRequired } from '@hapi/boom';
+import { forbidden } from '@hapi/boom';
 import { Lifecycle, ResponseToolkit, Server } from '@hapi/hapi';
 import { get } from 'config';
 import got from 'got';
