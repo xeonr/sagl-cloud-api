@@ -1,4 +1,4 @@
-import { forbidden } from '@hapi/boom';
+import { forbidden, proxyAuthRequired } from '@hapi/boom';
 import { Lifecycle, ResponseToolkit, Server } from '@hapi/hapi';
 import { get } from 'config';
 import got from 'got';
@@ -26,6 +26,25 @@ const page = `
 <body>
 	<div>
 		<p>Please <span>return to the app</span> to continue.</p>
+	</div>
+</body>
+<html>
+`;
+const goAway = `
+<html>
+<head>
+	<title>Not whitelisted</title>
+	<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+	<style>
+		* { background: #111; color: #FFF; font-family: "Open Sans", sans-serif; }
+		p { text-align: center; color: rgba(255,255,255,0.5);  }
+		p span { opacity: 1; }
+		div { height: 100vh; display: flex; flex-direction: row; align-items: center; justify-content: center; font-size: 1.5em; }
+	</style>
+</head>
+<body>
+	<div>
+		<p>Unfortunately, you don't have access to test the private alpha of SA:GL at this time.</p>
 	</div>
 </body>
 <html>
@@ -143,6 +162,12 @@ export const routes: RouterFn = (router: Server): void => {
 				});
 			}
 
+			if (!account.whitelisted) {
+				await redisPub.setex(`auth:${state}`, 60, 'false');
+
+				return goAway.trim();
+			}
+
 			await redisPub.setex(`auth:${state}`, 60, JSON.stringify({ userId: account.id! }));
 
 			if (redirectUri) {
@@ -169,6 +194,10 @@ export const routes: RouterFn = (router: Server): void => {
 
 			if (!val) {
 				throw forbidden('No such authentication attempt');
+			}
+
+			if (val === 'false') {
+				throw forbidden('You must be whitelisted to use SA:GL');
 			}
 
 			const { userId } = JSON.parse(val);
