@@ -1,4 +1,4 @@
-import { forbidden } from '@hapi/boom';
+import { forbidden, notFound } from '@hapi/boom';
 import { Lifecycle, ResponseToolkit, Server } from '@hapi/hapi';
 import { get } from 'config';
 import got from 'got';
@@ -193,7 +193,7 @@ export const routes: RouterFn = (router: Server): void => {
 			const val: string | null = await redisPub.get(`auth:${request.payload.state}`);
 
 			if (!val) {
-				throw forbidden('No such authentication attempt');
+				throw notFound('No such authentication attempt');
 			}
 
 			if (val === 'false') {
