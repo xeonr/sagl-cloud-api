@@ -95,6 +95,7 @@ export const routes: RouterFn = (router: Server): void => {
 					id: v4(),
 					...pick(request.payload, ['name', 'version', 'completed', 'savedAt', 'slot', 'computerName', 'computerId']),
 					hash,
+					userId: request.auth.credentials.user.id,
 				})),
 			};
 		},
