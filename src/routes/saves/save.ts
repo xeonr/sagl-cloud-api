@@ -43,7 +43,7 @@ export const routes: RouterFn = (router: Server): void => {
 					slot,
 					userId: request.auth.credentials.user.id,
 				},
-				order: [['savedAt', 'DESC']],
+				order: [['createdAt', 'DESC']],
 				limit: 1,
 			}).then(async ([game]: SaveGameState[]) => {
 				if (!game) {
@@ -117,7 +117,7 @@ export const routes: RouterFn = (router: Server): void => {
 					slot: request.params.slot,
 					userId: request.auth.credentials.user.id,
 				},
-				order: [['savedAt', 'DESC']],
+				order: [['createdAt', 'DESC']],
 				limit: 10,
 			}).then(async (games: SaveGameState[]) => {
 				return {
