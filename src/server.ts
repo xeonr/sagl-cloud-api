@@ -64,6 +64,7 @@ const routes: ((router: Server) => void)[] = [
 		if (listener.error && (<any>listener.error).isServer) { // tslint:disable-line no-any
 			// tslint:disable-next-line no-any
 			Logger.error(`Error while accessing route ${err.route.path}`, { error: (<any>listener.error)!.stack });
+			console.log(listener.error); // tslint:disable-line
 		}
 	});
 
