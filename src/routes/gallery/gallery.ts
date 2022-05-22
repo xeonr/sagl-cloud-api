@@ -32,7 +32,7 @@ export const routes: RouterFn = (router: Server): void => {
 					...request.query,
 					userId: request.auth.credentials.user.id,
 				},
-				order: [['uploadedAt', 'desc']],
+				order: [['originalCreatedAt', 'desc']],
 			}).then((images: GalleryImage[]) => {
 				return Promise.all(images.map(async (image: GalleryImage) => omit({
 					...image.toJSON(),
@@ -52,7 +52,7 @@ export const routes: RouterFn = (router: Server): void => {
 					source: Joi.string().required(),
 					file: Joi.any().required(),
 					fileHash: Joi.string().required(),
-					uploadedAt: Joi.date().required(),
+					originalCreatedAt: Joi.date().required(),
 				},
 			},
 			payload: {
@@ -83,7 +83,7 @@ export const routes: RouterFn = (router: Server): void => {
 				id,
 				name: request.payload.name,
 				source: request.payload.source,
-				uploadedAt: request.payload.uploadedAt.toISOString(),
+				originalCreatedAt: request.payload.originalCreatedAt.toISOString(),
 				userId: request.auth.credentials.user.id,
 				fileHash,
 			})).toJSON(), ['userid']);

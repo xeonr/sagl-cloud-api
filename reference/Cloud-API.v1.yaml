@@ -183,7 +183,7 @@ paths:
                   value:
                     - id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
                       name: test.jpg
-                      uploadedAt: '2011-11-11T00:00:00.000Z'
+                      originalCreatedAt: '2011-11-11T00:00:00.000Z'
                       source: samp
                       createdAt: '2020-08-30T19:19:50.660Z'
                       cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/gallery/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/cc3d556d-2e7b-447d-beb1-a58158926b1b.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200830%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200830T203835Z&X-Amz-Expires=900&X-Amz-Signature=eabac91c6542c38808ba3a7139c29b95782a30cf50965b21ed9b8667a87c0dee&X-Amz-SignedHeaders=host'
@@ -214,7 +214,7 @@ paths:
                     id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
                     name: test.jpg
                     source: string
-                    uploadedAt: '2019-08-24T14:15:22Z'
+                    originalCreatedAt: '2019-08-24T14:15:22Z'
                     createdAt: '2019-08-24T14:15:22Z'
                     cdnUrl: 'http://example.com'
                     fileHash: 067a8012fb7868c53abef0c8ead53e295f371c59cb354d6053f9aab51964f54b
@@ -281,19 +281,19 @@ paths:
                 source:
                   type: string
                   description: 'Source of the file, e.g samp or gta'
-                uploadedAt:
+                originalCreatedAt:
                   type: string
                   description: Time the file was created - this should be read from the file.
               required:
                 - file
                 - source
-                - uploadedAt
+                - originalCreatedAt
             examples:
               Example upload:
                 value:
                   file: {}
                   source: string
-                  uploadedAt: string
+                  originalCreatedAt: string
         description: ''
       tags:
         - Gallery
@@ -1053,7 +1053,7 @@ components:
           type: string
           description: |
             The image source (e.g samp or gta)
-        uploadedAt:
+        originalCreatedAt:
           type: string
           format: date-time
           description: This is the time the image was created. This may be before createdAt
@@ -1071,7 +1071,7 @@ components:
         - id
         - name
         - source
-        - uploadedAt
+        - originalCreatedAt
         - createdAt
         - cdnUrl
         - fileHash
@@ -1079,7 +1079,7 @@ components:
         Example Image:
           id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
           name: test.jpg
-          uploadedAt: '2011-11-11T00:00:00.000Z'
+          originalCreatedAt: '2011-11-11T00:00:00.000Z'
           source: samp
           createdAt: '2020-08-30T19:19:50.660Z'
           cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/gallery/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/cc3d556d-2e7b-447d-beb1-a58158926b1b.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200830%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200830T203835Z&X-Amz-Expires=900&X-Amz-Signature=eabac91c6542c38808ba3a7139c29b95782a30cf50965b21ed9b8667a87c0dee&X-Amz-SignedHeaders=host'

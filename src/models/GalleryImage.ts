@@ -13,7 +13,7 @@ export class GalleryImage extends Model<GalleryImage> {
 	public name: string;
 
 	@Column
-	public uploadedAt: string;
+	public originalCreatedAt: string;
 
 	@Column
 	public source: string;
