@@ -10,6 +10,9 @@ export class GalleryImage extends Model<GalleryImage> {
 	public id: string;
 
 	@Column
+	public name: string;
+
+	@Column
 	public uploadedAt: string;
 
 	@Column

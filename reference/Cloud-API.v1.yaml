@@ -182,6 +182,7 @@ paths:
                 Example image:
                   value:
                     - id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
+                      name: test.jpg
                       uploadedAt: '2011-11-11T00:00:00.000Z'
                       source: samp
                       createdAt: '2020-08-30T19:19:50.660Z'
@@ -211,6 +212,7 @@ paths:
                 example-1:
                   value:
                     id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
+                    name: test.jpg
                     source: string
                     uploadedAt: '2019-08-24T14:15:22Z'
                     createdAt: '2019-08-24T14:15:22Z'
@@ -996,6 +998,9 @@ components:
         id:
           type: string
           format: uuid
+        name:
+          type: string
+          description: Name of the image
         source:
           type: string
           description: |
@@ -1016,6 +1021,7 @@ components:
           format: uri
       required:
         - id
+        - name
         - source
         - uploadedAt
         - createdAt
@@ -1024,6 +1030,7 @@ components:
       x-examples:
         Example Image:
           id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
+          name: test.jpg
           uploadedAt: '2011-11-11T00:00:00.000Z'
           source: samp
           createdAt: '2020-08-30T19:19:50.660Z'

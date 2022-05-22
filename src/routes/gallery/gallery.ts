@@ -48,6 +48,7 @@ export const routes: RouterFn = (router: Server): void => {
 		options: {
 			validate: {
 				payload: {
+					name: Joi.string().required(),
 					source: Joi.string().required(),
 					file: Joi.any().required(),
 					uploadedAt: Joi.date().required(),
@@ -68,6 +69,7 @@ export const routes: RouterFn = (router: Server): void => {
 
 			return omit((await GalleryImage.create({
 				id,
+				name: request.payload.name,
 				source: request.payload.source,
 				uploadedAt: request.payload.uploadedAt.toISOString(),
 				userId: request.auth.credentials.user.id,
