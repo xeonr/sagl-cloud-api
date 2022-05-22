@@ -1,4 +1,4 @@
-import { notFound } from '@hapi/boom';
+import { badData, badRequest, notFound } from '@hapi/boom';
 import { Lifecycle, ResponseToolkit, Server } from '@hapi/hapi';
 import { createHash } from 'crypto';
 import { createReadStream, readFileSync } from 'fs';
@@ -51,6 +51,7 @@ export const routes: RouterFn = (router: Server): void => {
 					name: Joi.string().required(),
 					source: Joi.string().required(),
 					file: Joi.any().required(),
+					fileHash: Joi.string().required(),
 					uploadedAt: Joi.date().required(),
 				},
 			},
@@ -64,7 +65,18 @@ export const routes: RouterFn = (router: Server): void => {
 			},
 		},
 		handler: async (request: Request): Promise<Lifecycle.ReturnValue> => {
+			const fileHash = createHash('sha256').update(readFileSync(request.payload.file.path)).digest('hex');
+
+			if (fileHash !== request.payload.fileHash) {
+				throw badData('The image uploaded does not match the provided file hash');
+			}
+
 			const id = v4();
+
+			if ((await GalleryImage.count({ where: { userId: request.auth.credentials.user.id, fileHash } })) >= 1) {
+				throw badRequest('This image has already been uploaded to the users gallery');
+			}
+
 			await S3.uploadStream(getGalleryPath(request.auth.credentials.user.id, id, 'jpg'), createReadStream(request.payload.file.path), 'image/jpeg');
 
 			return omit((await GalleryImage.create({
@@ -73,7 +85,7 @@ export const routes: RouterFn = (router: Server): void => {
 				source: request.payload.source,
 				uploadedAt: request.payload.uploadedAt.toISOString(),
 				userId: request.auth.credentials.user.id,
-				fileHash: createHash('sha256').update(readFileSync(request.payload.file.path)).digest('hex'),
+				fileHash,
 			})).toJSON(), ['userid']);
 		},
 	});

@@ -218,6 +218,54 @@ paths:
                     createdAt: '2019-08-24T14:15:22Z'
                     cdnUrl: 'http://example.com'
                     fileHash: 067a8012fb7868c53abef0c8ead53e295f371c59cb354d6053f9aab51964f54b
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  error:
+                    type: string
+                  message:
+                    type: string
+                x-examples:
+                  example-1:
+                    statusCode: 422
+                    error: Bad Request
+                    message: This image has already been uploaded to the users gallery
+              examples:
+                Response:
+                  value:
+                    statusCode: 400
+                    error: Bad Request
+                    message: This image has already been uploaded to the users gallery
+        '422':
+          description: Unprocessable Entity (WebDAV)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  error:
+                    type: string
+                  message:
+                    type: string
+                x-examples:
+                  example-1:
+                    statusCode: 400
+                    error: Unprocessable Entity
+                    message: The image uploaded does not match the provided file hash
+              examples:
+                Response:
+                  value:
+                    statusCode: 422
+                    error: Unprocessable Entity
+                    message: The image uploaded does not match the provided file hash
       description: Upload an image to the gallery
       security:
         - JWT: []
