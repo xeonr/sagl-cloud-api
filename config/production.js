@@ -1,7 +1,7 @@
 module.exports = {
 	"discord": {
-		"clientId": process.env.DISCORD_CLIENT_ID,
-		"clientSecret": process.env.DISCORD_CLIENT_SECRET,
+		"clientId": "vault:sagl/cloud-api.discord.clientId",
+		"clientSecret": "vault:sagl/cloud-api.discord.clientSecret",
 		"redirectUri": "https://cloud-api.sagl.app/v1/auth",
 		"scopes": [
 			"identify",
@@ -10,28 +10,26 @@ module.exports = {
 		]
 	},
 	"database": {
-		"database": process.env.MYSQL_DB_DB,
+		"database": "vault:sagl/database/mysql.databases.cloudApi",
 		"dialect": "mysql",
-		"username": process.env.MYSQL_DB_USER,
-		"password": process.env.MYSQL_DB_PASS,
-		dialectOptions: {
-			socketPath: '/cloudsql/'+process.env.MYSQL_CONN
-		},
+		"username": "vault:sagl/database/mysql.usernamae",
+		"password": "vault:sagl/database/mysql.password",
+		"host": "vault:sagl/database/mysql.host",
 	},
 	"redis": {
-		"host": process.env.REDIS_HOST,
+		"host": "vault:sagl/database/redis.host",
 		"keyPrefix": "sagl:",
-		"port": process.env.REDIS_PORT,
-		"password": process.env.REDIS_PASS
+		"port": "vault:sagl/database/redis.port",
+		"password": "vault:sagl/database/redis.password",
 	},
 	"storage": {
 		"bucket": "cdn.sagl.app",
-		"auth": undefined
+		"auth": "vault:sagl/cloud-api.gcs",
 	},
 	"web": {
-		"jwtToken": process.env.JWT_SECRET,
+		"auth": "vault:sagl/cloud-api.jwtSecret",
 		"host": "0.0.0.0",
-		"port": process.env.PORT,
+		"port": 8080,
 	},
 	"saglServerApi": "https://server-api.sagl.app"
 }

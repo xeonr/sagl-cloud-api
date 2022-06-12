@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node src/server",
+    "start": "vault-config && ts-node src/server",
     "lint": "tslint --project ."
   },
   "author": "",
@@ -13,6 +13,7 @@
     "@google-cloud/storage": "^5.8.5",
     "@hapi/boom": "^9.1.0",
     "@hapi/hapi": "^20.0.0",
+    "@majesticfudgie/vault-config": "^1.0.1",
     "@types/bluebird": "^3.5.32",
     "@types/config": "0.0.36",
     "@types/hapi__boom": "^9.0.1",

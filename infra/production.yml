@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    product: sagl
+    app: cloud-api
+  name: cloud-api
+  namespace: xeonr-prod-sagl
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cloud-api
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        product: sagl
+        app: cloud-api
+      name: cloud-api
+    spec:
+      serviceAccountName: vault-auth
+      containers:
+        - image: europe-west1-docker.pkg.dev/xeonr-io/sagl/cloud-api
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: VAULT_ADDR
+              value: http://vault-active.vault.svc.cluster.local:8200
+            - name: VAULT_KUBERNETES_ROLE
+              value: sagl-prod-cloud-api
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+          name: cloud-api
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    app: cloud-api
+  name: cloud-api
+  namespace: xeonr-prod-sagl
+spec:
+  type: ClusterIP
+  selector:
+    app: cloud-api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: cloud-api
+  namespace: xeonr-prod-sagl
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`server-api.sagl.app`)
+      priority: 10
+      services:
+        - name: vault-active
+          port: 8200
