@@ -1,5 +1,5 @@
 import { Lifecycle, Request, RequestEvent, ResponseToolkit, Server } from '@hapi/hapi';
-import { get } from 'config';
+import vaultConfig from '@majesticfudgie/vault-config';
 import * as Joi from 'joi';
 import { Sequelize } from 'sequelize-typescript';
 
@@ -15,8 +15,8 @@ import { Logger } from './util/Logger';
 import { RouterFn } from './util/Types';
 
 const server: Server = new Server({
-	host: get('web.host'),
-	port: get('web.port'),
+	host: vaultConfig.get('web.host'),
+	port: vaultConfig.get('web.port'),
 	routes: {
 		cors: true,
 		validate: {
@@ -39,7 +39,7 @@ const routes: ((router: Server) => void)[] = [
 
 (async (): Promise<void> => {
 	const db = new Sequelize({
-		...get('database'),
+		...vaultConfig.get('database'),
 		models: [`${__dirname}/models`],
 	}); // tslint:disable-line
 
@@ -71,7 +71,7 @@ const routes: ((router: Server) => void)[] = [
 	// Setup JWT
 	await server.register(require('hapi-auth-jwt2')); // tslint:disable-line
 	server.auth.strategy('jwt', 'jwt', {
-		key: get('web.jwtToken'),
+		key: vaultConfig.get('web.jwtToken'),
 		validate: validateAuth,
 	});
 
@@ -84,9 +84,9 @@ const routes: ((router: Server) => void)[] = [
 	await server.start();
 
 	Logger.info('Started server', {
-		host: get('web.host'),
-		port: get('web.port'),
-		url: `http://${get('web.host')}:${get('web.port')}`, // tslint:disable-line
+		host: vaultConfig.get('web.host'),
+		port: vaultConfig.get('web.port'),
+		url: `http://${vaultConfig.get('web.host')}:${vaultConfig.get('web.port')}`, // tslint:disable-line
 	});
 })()
 	.catch((e: Error): void => {

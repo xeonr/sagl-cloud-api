@@ -1,6 +1,6 @@
 import { forbidden, notFound } from '@hapi/boom';
 import { Lifecycle, ResponseToolkit, Server } from '@hapi/hapi';
-import { get } from 'config';
+import vaultConfig from '@majesticfudgie/vault-config';
 import got from 'got';
 import Joi from 'joi';
 import { sign } from 'jsonwebtoken';
@@ -52,22 +52,22 @@ const goAway = `
 
 function createRedirect(state: string, redirectUri: string = ''): string {
 	return 'https://discord.com/api/oauth2/authorize?'
-		+ `client_id=${get('discord.clientId')}`
-		+ `&redirect_uri=${get('discord.redirectUri')}`
+		+ `client_id=${vaultConfig.get('discord.clientId')}`
+		+ `&redirect_uri=${vaultConfig.get('discord.redirectUri')}`
 		+ `&response_type=code`
 		+ `&prompt=none`
 		+ `&state=${state}:${Buffer.from(redirectUri).toString('hex')}`
-		+ `&scope=${(get<string[]>('discord.scopes')).join(' ')}`;
+		+ `&scope=${(vaultConfig.get('discord.scopes')).join(' ')}`;
 }
 
 function getToken(code: string): Promise<{ accessToken: string; refreshToken: string; expiresAt: Date }> {
 	return got.post(`https://discord.com/api/oauth2/token`, {
 		form: {
-			client_id: get('discord.clientId'),
-			client_secret: get('discord.clientSecret'),
-			redirect_uri: get('discord.redirectUri'),
+			client_id: vaultConfig.get('discord.clientId'),
+			client_secret: vaultConfig.get('discord.clientSecret'),
+			redirect_uri: vaultConfig.get('discord.redirectUri'),
 			grant_type: 'authorization_code',
-			scope: get<string[]>('discord.scopes').join(' '),
+			scope: vaultConfig.get('discord.scopes').join(' '),
 			code,
 		},
 		responseType: 'json',
@@ -201,7 +201,7 @@ export const routes: RouterFn = (router: Server): void => {
 			}
 
 			const { userId } = JSON.parse(val);
-			const token: string = sign({ userId }, get('web.jwtToken'));
+			const token: string = sign({ userId }, vaultConfig.get('web.jwtToken'));
 
 			return {
 				jwt: token,

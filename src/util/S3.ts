@@ -1,15 +1,15 @@
 import { Storage } from '@google-cloud/storage';
-import { get, has } from 'config';
+import vaultConfig from '@majesticfudgie/vault-config';
 import { Stream } from 'stream';
 
-const storage = has('storage.auth') ? new Storage({
-	projectId: get('storage.auth.project_id'),
-	credentials: get('storage.auth'),
+const storage = vaultConfig.has('storage.auth') ? new Storage({
+	projectId: vaultConfig.get('storage.auth.project_id'),
+	credentials: vaultConfig.get('storage.auth'),
 }) : new Storage();
 
 class S3CDN {
 	public async getUrl(key: string): Promise<string> {
-		const [url] = await storage.bucket(get('storage.bucket')).file(key).getSignedUrl({
+		const [url] = await storage.bucket(vaultConfig.get('storage.bucket')).file(key).getSignedUrl({
 			version: 'v4',
 			action: 'read',
 			expires: Date.now() + 10 * 60 * 1000,
@@ -19,13 +19,13 @@ class S3CDN {
 	}
 
 	public async upload(key: string, data: Buffer, kind?: string): Promise<void> {
-		await storage.bucket(get('storage.bucket')).file(key).save(data, {
+		await storage.bucket(vaultConfig.get('storage.bucket')).file(key).save(data, {
 			contentType: kind,
 		});
 	}
 
 	public async uploadStream(key: string, data: Stream, kind?: string): Promise<void> {
-		const stream = storage.bucket(get('storage.bucket')).file(key).createWriteStream({
+		const stream = storage.bucket(vaultConfig.get('storage.bucket')).file(key).createWriteStream({
 			contentType: kind,
 		});
 

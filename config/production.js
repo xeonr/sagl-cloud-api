@@ -12,7 +12,7 @@ module.exports = {
 	"database": {
 		"database": "vault:sagl/database/mysql.databases.cloudApi",
 		"dialect": "mysql",
-		"username": "vault:sagl/database/mysql.usernamae",
+		"username": "vault:sagl/database/mysql.username",
 		"password": "vault:sagl/database/mysql.password",
 		"host": "vault:sagl/database/mysql.host",
 	},

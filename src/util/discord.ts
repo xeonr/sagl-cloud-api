@@ -1,4 +1,4 @@
-import { get } from 'config';
+import vaultConfig from '@majesticfudgie/vault-config';
 import got from 'got';
 
 import { User } from './../models/User';
@@ -13,8 +13,8 @@ export async function getDiscordToken(user: User): Promise<string> {
 
 	return got.post(`https://discord.com/api/oauth2/token`, {
 		form: {
-			client_id: get('discord.clientId'),
-			client_secret: get('discord.clientSecret'),
+			client_id: vaultConfig.get('discord.clientId'),
+			client_secret: vaultConfig.get('discord.clientSecret'),
 			grant_type: 'refresh_token',
 			refresh_token: user.discordRefreshToken,
 		},

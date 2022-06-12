@@ -1,8 +1,8 @@
-import { get } from 'config';
+import vaultConfig from '@majesticfudgie/vault-config';
 import IORedis, { Redis } from 'ioredis';
 
 function getRedis(): Redis {
-	return new IORedis(get('redis'));
+	return new IORedis(vaultConfig.get('redis'));
 }
 
 const client: { pub: Redis } = {
