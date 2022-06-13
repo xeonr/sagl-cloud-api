@@ -78,8 +78,8 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`server-api.sagl.app`)
+      match: Host(`cloud-api.sagl.app`)
       priority: 10
       services:
-        - name: vault-active
-          port: 8200
+        - name: cloud-api
+          port: 80
