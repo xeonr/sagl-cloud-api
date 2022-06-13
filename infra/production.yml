@@ -34,6 +34,12 @@ spec:
               value: http://vault-active.vault.svc.cluster.local:8200
             - name: VAULT_KUBERNETES_ROLE
               value: sagl-prod-cloud-api
+            - name: ELASTIC_APM_SERVICE_NAME
+              value: sagl-cloud-api
+            - name: ELASTIC_APM_SERVER_URL
+              value: http://infra.lon1.xeonr.io:8200
+            - name: ELASTIC_APM_CAPTURE_BODY
+              value: all
           resources:
             requests:
               cpu: "250m"

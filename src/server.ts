@@ -1,3 +1,5 @@
+// @ts-ignore
+import apm from 'elastic-apm-node/start'; // tslint:disable-line
 import { Lifecycle, Request, RequestEvent, ResponseToolkit, Server } from '@hapi/hapi';
 import vaultConfig from '@majesticfudgie/vault-config';
 import * as Joi from 'joi';

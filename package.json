@@ -28,6 +28,7 @@
     "@types/winston": "^2.4.4",
     "aws-sdk": "^2.742.0",
     "config": "^3.3.1",
+    "elastic-apm-node": "^3.35.0",
     "got": "^11.5.2",
     "hapi-auth-jwt2": "^10.1.0",
     "ioredis": "^4.17.3",
