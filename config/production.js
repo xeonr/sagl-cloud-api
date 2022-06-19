@@ -27,7 +27,7 @@ module.exports = {
 		"auth": "vault:sagl/cloud-api.gcs",
 	},
 	"web": {
-		"auth": "vault:sagl/cloud-api.jwtSecret",
+		"jwtToken": "vault:sagl/cloud-api.jwtSecret",
 		"host": "0.0.0.0",
 		"port": 8080,
 	},
