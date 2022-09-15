@@ -25,6 +25,9 @@ export class SaveGameState extends Model<SaveGameState> {
 	public slot: number;
 
 	@Column
+	public active: boolean;
+
+	@Column
 	public savedAt: Date;
 
 	@BelongsTo((): typeof User => User)

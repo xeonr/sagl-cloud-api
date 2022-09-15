@@ -535,7 +535,44 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/GameSaveState'
+                  $ref: '#/components/schemas/GameSave'
+              examples:
+                example-1:
+                  value:
+                    - slot: 1
+                      currentId: b64ff0b7-9225-4763-ad7d-69437ed01aa0
+                      current:
+                        id: b64ff0b7-9225-4763-ad7d-69437ed01aa0
+                        hash: 86C70776C6B61DAAD722325496ABF51AFD740D7E
+                        name: Example Game
+                        version: Test
+                        completed: 0
+                        active: true
+                        savedAt: '2022-09-15T03:57:35.000Z'
+                        createdAt: '2022-09-15T03:58:01.000Z'
+                        userId: e99d4779-8858-4f76-b0aa-c6c8a9b19a06
+                        cdnUrl: 'https://storage.googleapis.com/cdn.sagl.app/saves/e99d4779-8858-4f76-b0aa-c6c8a9b19a06/1/86/86C70776C6B61DAAD722325496ABF51AFD740D7E?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=cloud-api-runner%40xeonr-io.iam.gserviceaccount.com%2F20220915%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20220915T040557Z&X-Goog-Expires=600&X-Goog-SignedHeaders=host&X-Goog-Signature=00ed5161d8dace65cedb86e0a27a1c83263f7d43b0047e69a7f419b98a00dbc4a2ff388e31586864bc4317d0e50ef4bfba5edb6e8b05e7ac305ac4e47748b54ca10406d2483c82d281ee6e209f8ddffe92d85c0957bada4d42f061bb656b441bd05f4f5096d89d3caadacefcb2a26a749ebb2b841a2a599c390c8125039e2baffe5f181d12c2c1b6e9e906825c23895ae233754c33fb3f4d782018fb574a0352c5eb1a4284c80359c3b4fa205f3bd83bbf577dc11109d9d3ab50dd4b3749c38d0dcd7152eda927130f7c40bba7bc706f0d30ce5c0483819437992520dcab83685cb9ac0f9b02e20699f0f610912e1babe4947db3998ea659f5f245b8fa9a7c4d'
+                    - slot: 2
+                      currentId: null
+                      current: null
+                    - slot: 3
+                      currentId: null
+                      current: null
+                    - slot: 4
+                      currentId: null
+                      current: null
+                    - slot: 5
+                      currentId: null
+                      current: null
+                    - slot: 6
+                      currentId: null
+                      current: null
+                    - slot: 7
+                      currentId: null
+                      current: null
+                    - slot: 8
+                      currentId: null
+                      current: null
       operationId: get-saves
       security:
         - JWT: []
@@ -544,64 +581,6 @@ paths:
         - schema:
             type: string
           in: header
-    post:
-      summary: Store a game save
-      operationId: post-saves
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    description: Game Save ID
-                required:
-                  - id
-      security:
-        - JWT: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                slot:
-                  type: number
-                  description: 'Optional save id to store on. If missing, a new save will be created.'
-                  minimum: 1
-                  maximum: 8
-                name:
-                  type: string
-                version:
-                  type: string
-                completed:
-                  type: number
-                savedAt:
-                  type: string
-                file:
-                  type: string
-                  description: Multipart file
-                  format: binary
-                computerName:
-                  type: string
-                computerId:
-                  type: string
-              required:
-                - slot
-                - name
-                - version
-                - completed
-                - savedAt
-                - file
-                - computerName
-                - computerId
-        description: ''
-      description: Upload a game save
-      tags:
-        - Saves
   '/saves/{slot}':
     parameters:
       - schema:
@@ -696,6 +675,105 @@ paths:
       description: Get a save and its history
       security:
         - JWT: []
+    patch:
+      summary: ''
+      operationId: patch-saves-slot
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameSave'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                currentId:
+                  type: string
+                  nullable: true
+              required:
+                - currentId
+      description: Updates the active save in the save slot.
+  '/saves/{slot}/upload':
+    parameters:
+      - schema:
+          type: number
+          minimum: 1
+          maximum: 8
+        name: slot
+        in: path
+        required: true
+    post:
+      summary: Store a game save
+      operationId: post-saves
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameSaveState'
+              examples:
+                Example:
+                  value:
+                    id: b64ff0b7-9225-4763-ad7d-69437ed01aa0
+                    hash: 86C70776C6B61DAAD722325496ABF51AFD740D7E
+                    name: Example
+                    version: test
+                    completed: 0
+                    active: true
+                    savedAt: '2022-09-15T03:57:35.000Z'
+                    createdAt: '2022-09-15T03:58:01.000Z'
+                    userId: e99d4779-8858-4f76-b0aa-c6c8a9b19a06
+                    cdnUrl: 'https://storage.googleapis.com/cdn.sagl.app/saves/e99d4779-8858-4f76-b0aa-c6c8a9b19a06/1/86/86C70776C6B61DAAD722325496ABF51AFD740D7E?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=cloud-api-runner%40xeonr-io.iam.gserviceaccount.com%2F20220915%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20220915T040557Z&X-Goog-Expires=600&X-Goog-SignedHeaders=host&X-Goog-Signature=00ed5161d8dace65cedb86e0a27a1c83263f7d43b0047e69a7f419b98a00dbc4a2ff388e31586864bc4317d0e50ef4bfba5edb6e8b05e7ac305ac4e47748b54ca10406d2483c82d281ee6e209f8ddffe92d85c0957bada4d42f061bb656b441bd05f4f5096d89d3caadacefcb2a26a749ebb2b841a2a599c390c8125039e2baffe5f181d12c2c1b6e9e906825c23895ae233754c33fb3f4d782018fb574a0352c5eb1a4284c80359c3b4fa205f3bd83bbf577dc11109d9d3ab50dd4b3749c38d0dcd7152eda927130f7c40bba7bc706f0d30ce5c0483819437992520dcab83685cb9ac0f9b02e20699f0f610912e1babe4947db3998ea659f5f245b8fa9a7c4d'
+      security:
+        - JWT: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                slot:
+                  type: number
+                  description: 'Optional save id to store on. If missing, a new save will be created.'
+                  minimum: 1
+                  maximum: 8
+                name:
+                  type: string
+                version:
+                  type: string
+                completed:
+                  type: number
+                savedAt:
+                  type: string
+                file:
+                  type: string
+                  description: Multipart file
+                  format: binary
+                computerName:
+                  type: string
+                computerId:
+                  type: string
+                setActive:
+                  type: boolean
+              required:
+                - slot
+                - name
+                - version
+                - completed
+                - savedAt
+                - file
+                - computerName
+                - computerId
+                - setActive
+        description: ''
+      description: Upload a game save
+      tags:
+        - Saves
   /servers/discord:
     get:
       summary: Get discord servers in common
@@ -1089,10 +1167,12 @@ components:
       title: GameSave
       type: object
       x-examples:
-        Example:
+        Active:
           slot: 1
           createdAt: '2020-08-30T22:02:15.603Z'
+          currentId: '12345'
           current:
+            id: '12345'
             computerId: '1234'
             computerName: Jeff
             hash: '1234'
@@ -1102,6 +1182,11 @@ components:
             savedAt: '2020-08-30T22:02:15.603Z'
             createdAt: '2020-08-30T22:02:15.603Z'
             cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/12/1234?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200830%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200830T215931Z&X-Amz-Expires=900&X-Amz-Signature=961cdead0eedc9ad9ffb76373131ec6fd0501340cb93c27640c676e5d67781b6&X-Amz-SignedHeaders=host'
+        Inactive:
+          slot: 2
+          currentId: null
+          current: null
+          history: []
       description: A game save
       x-tags:
         - Saves
@@ -1110,17 +1195,21 @@ components:
           type: number
           minimum: 1
           maximum: 8
+        currentId:
+          type: string
+          nullable: true
         current:
           oneOf:
-            - type: 'null'
             - $ref: '#/components/schemas/GameSaveState'
-        states:
+            - nullable: true
+        history:
           type: array
           description: History of saves. This is only provided if accessed directly.
           items:
             $ref: '#/components/schemas/GameSaveState'
       required:
         - slot
+        - currentId
         - current
     GameSaveState:
       title: GameSaveState
@@ -1130,6 +1219,7 @@ components:
       description: Game save at a point in time
       x-examples:
         Example:
+          id: b64ff0b7-9225-4763-ad7d-69437ed01aa0
           hash: '1234'
           name: '1234'
           version: Version 2.0 German
@@ -1137,7 +1227,10 @@ components:
           savedAt: '2020-08-30T22:02:15.603Z'
           createdAt: '2020-08-30T22:02:15.603Z'
           cdnUrl: 'https://s3.eu-west-2.amazonaws.com/sagl-cdn/saves/ba949cd8-ec3c-40a2-9cb8-a1dcd388d226/12/1234?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIG6NUIYUXFXS7URA%2F20200830%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200830T215931Z&X-Amz-Expires=900&X-Amz-Signature=961cdead0eedc9ad9ffb76373131ec6fd0501340cb93c27640c676e5d67781b6&X-Amz-SignedHeaders=host'
+          active: false
       properties:
+        id:
+          type: string
         hash:
           type: string
           description: SHA1 of the game file
@@ -1145,14 +1238,14 @@ components:
           type: string
         version:
           type: string
+        savedAt:
+          type: string
+          format: date-time
         completed:
           type: number
           description: Percentage of game completion
           minimum: 0
           maximum: 1
-        savedAt:
-          type: string
-          format: date-time
         createdAt:
           type: string
           format: date-time
@@ -1163,16 +1256,21 @@ components:
           type: string
         computerName:
           type: string
+        active:
+          type:
+            - string
+            - boolean
       required:
         - hash
         - name
         - version
-        - completed
         - savedAt
+        - completed
         - createdAt
         - cdnUrl
         - computerId
         - computerName
+        - active
   securitySchemes:
     JWT:
       type: http
