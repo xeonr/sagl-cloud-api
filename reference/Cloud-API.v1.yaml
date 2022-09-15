@@ -388,7 +388,6 @@ paths:
                     id: 5f538c39-e160-4c5f-bfc4-37c42f1405fe
                     hash: 0346549F60931DBBEEDE735AC242F18A0AF6DA5F
                     address: example.org
-                    description: test
                     port: 7777
                     sampUsername: null
                     rconPassword: null
@@ -423,20 +422,16 @@ paths:
                   type: number
                   maximum: 65535
                   minimum: 0
-                description:
-                  type: string
               required:
                 - address
                 - sampUsername
                 - serverPassword
                 - rconPassword
-                - description
                 - port
             examples:
               example-1:
                 value:
                   address: string
-                  description: string
                   port: 7777
                   sampUsername: null
                   serverPassword: null
@@ -1077,7 +1072,6 @@ components:
           id: 5f538c39-e160-4c5f-bfc4-37c42f1405fe
           hash: 0346549F60931DBBEEDE735AC242F18A0AF6DA5F
           address: example.org
-          description: magic
           port: 7777
           sampUsername: null
           serverPassword: null
@@ -1117,8 +1111,6 @@ components:
           type: number
           maximum: 65535
           default: 7777
-        description:
-          type: string
       required:
         - id
         - hash
@@ -1126,7 +1118,6 @@ components:
         - createdAt
         - updatedAt
         - port
-        - description
     GalleryImage:
       title: GalleryImage
       type: object
