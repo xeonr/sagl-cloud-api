@@ -28,6 +28,9 @@ export class PersonalServer extends Model<PersonalServer> {
 	public serverPassword: string | null;
 
 	@Column
+	public sampUsername: string | null;
+
+	@Column
 	public rconPassword: string | null;
 
 	@BelongsTo((): typeof User => User)

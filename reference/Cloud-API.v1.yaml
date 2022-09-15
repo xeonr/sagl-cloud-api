@@ -390,7 +390,7 @@ paths:
                     address: example.org
                     description: test
                     port: 7777
-                    serverPassword: null
+                    sampUsername: null
                     rconPassword: null
                     createdAt: '2020-08-30T04:08:49.015Z'
                     updatedAt: '2020-08-30T04:09:03.437Z'
@@ -411,6 +411,10 @@ paths:
                   oneOf:
                     - type: string
                     - type: 'null'
+                sampUsername:
+                  oneOf:
+                    - type: string
+                    - type: 'null'
                 rconPassword:
                   oneOf:
                     - type: string
@@ -423,6 +427,7 @@ paths:
                   type: string
               required:
                 - address
+                - sampUsername
                 - serverPassword
                 - rconPassword
                 - description
@@ -433,6 +438,7 @@ paths:
                   address: string
                   description: string
                   port: 7777
+                  sampUsername: null
                   serverPassword: null
                   rconPassword: null
     delete:
@@ -1073,6 +1079,7 @@ components:
           address: example.org
           description: magic
           port: 7777
+          sampUsername: null
           serverPassword: null
           rconPassword: null
           createdAt: '2020-08-30T04:08:49.015Z'
@@ -1089,6 +1096,10 @@ components:
         address:
           type: string
         serverPassword:
+          oneOf:
+            - type: string
+            - type: 'null'
+        sampUsername:
           oneOf:
             - type: string
             - type: 'null'
