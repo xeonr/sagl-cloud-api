@@ -1,10 +1,10 @@
 import { Lifecycle, Server } from '@hapi/hapi';
-import vaultConfig from '@majesticfudgie/vault-config';
-import got from 'got';
 
-import { Request } from '../../util/Auth';
-import { getDiscordToken, getGuilds } from '../../util/discord';
-import { RouterFn } from '../../util/Types';
+import { Request } from '../../util/Auth.js';
+import { getDiscordToken, getGuilds } from '../../util/discord.js';
+import { RouterFn } from '../../util/Types.js';
+import { serverClient } from '../../util/serverApi.js';
+import { FieldName, ListServersRequest, Operator } from '@buf/xeonr_sagl-servers.bufbuild_es/serversapi/v1/api_pb.js';
 
 export const routes: RouterFn = (router: Server): void => {
 	router.route({
@@ -12,15 +12,21 @@ export const routes: RouterFn = (router: Server): void => {
 		path: '/servers/discord',
 		handler: async (request: Request): Promise<Lifecycle.ReturnValue> => {
 			const token = await getDiscordToken(request.auth.credentials.user);
-			const guilds = (await getGuilds(token)).map(i => `metadata.discordGuild=${i}`).join('&');
 
-			return got.get(`${vaultConfig.get('saglServerApi')}/v1/servers?limit=100&${guilds}`, {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-				responseType: 'json',
-			}).then(async (r: any) => { // tslint:disable-line
-				return r.body;
+			return serverClient.listServers(new ListServersRequest({
+				requestType: {
+					case: 'filter',
+					value: {
+						filter: [{
+							field: FieldName.DISCORD_GUILD,
+							operator: Operator.EQUAL,
+							value: await getGuilds(token),
+						}],
+						limit: 100,
+					}
+				}
+			})).then(async (r) => { // tslint:disable-line
+				return r.server ?? [];
 			});
 		},
 	});

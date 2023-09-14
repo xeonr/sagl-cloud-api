@@ -3,9 +3,9 @@ import { Lifecycle, Server } from '@hapi/hapi';
 import Joi from 'joi';
 import { v4 } from 'uuid';
 
-import { GameConfig } from '../../models/GameConfig';
-import { Request } from '../../util/Auth';
-import { RouterFn } from './../../util/Types';
+import { GameConfig } from '../../models/GameConfig.js';
+import { Request } from '../../util/Auth.js';
+import { RouterFn } from './../../util/Types.js';
 
 const FILES: string[] = [
 	'gta',

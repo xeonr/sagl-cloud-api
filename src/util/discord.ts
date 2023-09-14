@@ -1,8 +1,8 @@
-import vaultConfig from '@majesticfudgie/vault-config';
+import vaultConfig from 'config';
 import got from 'got';
 
-import { User } from './../models/User';
-import { redisPub } from './Redis';
+import { User } from './../models/User.js';
+import { redisPub } from './Redis.js';
 
 export async function getDiscordToken(user: User): Promise<string> {
 	const exists = await redisPub.get(`discord:${user.id}:access`);

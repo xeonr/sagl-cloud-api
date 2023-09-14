@@ -1,7 +1,7 @@
 import { Request as HapiRequest, RequestAuth } from '@hapi/hapi';
-import _ from 'lodash';
+import _ from 'lodash-es';
 
-import { User } from '../models/User';
+import { User } from '../models/User.js';
 
 // tslint:disable-next-line
 export interface RequestAuthenticationInformation extends RequestAuth {
@@ -22,11 +22,14 @@ export interface IToken {
 }
 
 export async function validateAuth(token: IToken): Promise<{ isValid: boolean; credentials?: unknown }> {
+	console.log(token);
 	const user: User | null = await User.findOne({ where: { id: token.userId } });
 
+	console.log(user.whitelisted);
 	if (!user || !user.whitelisted) {
 		return { isValid: false };
 	}
+
 
 	return { isValid: true, credentials: { user: user } };
 

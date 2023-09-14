@@ -3,13 +3,13 @@ import { Lifecycle, ResponseToolkit, Server } from '@hapi/hapi';
 import { createHash } from 'crypto';
 import { createReadStream, readFileSync } from 'fs';
 import Joi from 'joi';
-import { omit } from 'lodash';
+import { omit } from 'lodash-es';
 import { v4 } from 'uuid';
 
-import { GalleryImage } from '../../models/GalleryImage';
-import { Request } from '../../util/Auth';
-import { S3 } from '../../util/S3';
-import { RouterFn } from './../../util/Types';
+import { GalleryImage } from '../../models/GalleryImage.js';
+import { Request } from '../../util/Auth.js';
+import { S3 } from '../../util/S3.js';
+import { RouterFn } from './../../util/Types.js';
 
 function getGalleryPath(userId: string, id: string, extension: string): string {
 	return `gallery/${userId}/${id}.${extension}`;

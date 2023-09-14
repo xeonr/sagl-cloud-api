@@ -1,15 +1,15 @@
 import { forbidden, notFound } from '@hapi/boom';
 import { Lifecycle, ResponseToolkit, Server } from '@hapi/hapi';
-import vaultConfig from '@majesticfudgie/vault-config';
+import vaultConfig from 'config';
 import got from 'got';
 import Joi from 'joi';
-import { sign } from 'jsonwebtoken';
+import { sign } from 'jsonwebtoken-esm';
 import { v4 } from 'uuid';
 
-import { User } from '../../models/User';
-import { Request } from '../../util/Auth';
-import { redisPub } from '../../util/Redis';
-import { RouterFn } from './../../util/Types';
+import { User } from '../../models/User.js';
+import { Request } from '../../util/Auth.js';
+import { redisPub } from '../../util/Redis.js';
+import { RouterFn } from './../../util/Types.js';
 
 const page = `
 <html>
@@ -57,7 +57,7 @@ function createRedirect(state: string, redirectUri: string = ''): string {
 		+ `&response_type=code`
 		+ `&prompt=none`
 		+ `&state=${state}:${Buffer.from(redirectUri).toString('hex')}`
-		+ `&scope=${(vaultConfig.get('discord.scopes')).join(' ')}`;
+		+ `&scope=${(vaultConfig.get<string[]>('discord.scopes')).join(' ')}`;
 }
 
 function getToken(code: string): Promise<{ accessToken: string; refreshToken: string; expiresAt: Date }> {
@@ -67,7 +67,7 @@ function getToken(code: string): Promise<{ accessToken: string; refreshToken: st
 			client_secret: vaultConfig.get('discord.clientSecret'),
 			redirect_uri: vaultConfig.get('discord.redirectUri'),
 			grant_type: 'authorization_code',
-			scope: vaultConfig.get('discord.scopes').join(' '),
+			scope: vaultConfig.get<string[]>('discord.scopes').join(' '),
 			code,
 		},
 		responseType: 'json',

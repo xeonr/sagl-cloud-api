@@ -1,21 +1,27 @@
 // @ts-ignore
-import apm from 'elastic-apm-node/start'; // tslint:disable-line
 import { Lifecycle, Request, RequestEvent, ResponseToolkit, Server } from '@hapi/hapi';
-import vaultConfig from '@majesticfudgie/vault-config';
-import * as Joi from 'joi';
+import Joi from 'joi';
 import { Sequelize } from 'sequelize-typescript';
 
-import * as accounts from './routes/account/accounts';
-import * as auth from './routes/account/auth';
-import * as gallery from './routes/gallery/gallery';
-import * as config from './routes/saves/config';
-import * as saves from './routes/saves/save';
-import * as discord from './routes/servers/discord';
-import * as mine from './routes/servers/personal';
-import { validateAuth } from './util/Auth';
-import { Logger } from './util/Logger';
-import { RouterFn } from './util/Types';
+import * as accounts from './routes/account/accounts.js';
+import * as auth from './routes/account/auth.js';
+import * as gallery from './routes/gallery/gallery.js';
+import * as config from './routes/saves/config.js';
+import * as saves from './routes/saves/save.js';
+import * as discord from './routes/servers/discord.js';
+import * as mine from './routes/servers/personal.js';
+import { validateAuth } from './util/Auth.js';
+import { Logger } from './util/Logger.js';
+import { RouterFn } from './util/Types.js';
 
+import vaultConfig from 'config';
+import { fileURLToPath } from 'url';
+import { User } from './models/User.js';
+import { Analytic } from './models/Analytic.js';
+import { GalleryImage } from './models/GalleryImage.js';
+import { GameConfig } from './models/GameConfig.js';
+import { PersonalServer } from './models/PersonalServer.js';
+import { SaveGameState } from './models/SaveGameState.js';
 const server: Server = new Server({
 	host: vaultConfig.get('web.host'),
 	port: vaultConfig.get('web.port'),
@@ -38,12 +44,16 @@ const routes: ((router: Server) => void)[] = [
 	config.routes,
 	discord.routes,
 ];
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 (async (): Promise<void> => {
+	console.log(`${__dirname}/models`);
 	const db = new Sequelize({
 		...vaultConfig.get('database'),
-		models: [`${__dirname}/models`],
+		models: [`${__dirname}models`],
 	}); // tslint:disable-line
+
+	db.addModels([User, Analytic, GalleryImage, GameConfig, PersonalServer, SaveGameState]);
 
 	// Point to docs.
 	server.route({
@@ -71,7 +81,8 @@ const routes: ((router: Server) => void)[] = [
 	});
 
 	// Setup JWT
-	await server.register(require('hapi-auth-jwt2')); // tslint:disable-line
+	const hapiAuthJwt2 = await import('hapi-auth-jwt2');
+	await server.register(hapiAuthJwt2); // tslint:disable-line
 	server.auth.strategy('jwt', 'jwt', {
 		key: vaultConfig.get('web.jwtToken'),
 		validate: validateAuth,

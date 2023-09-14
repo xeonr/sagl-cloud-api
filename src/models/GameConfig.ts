@@ -1,23 +1,23 @@
 import { BelongsTo, Column, DataType, ForeignKey, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
 
-import { User } from './User';
+import { User } from './User.js';
 
 @Table
 export class GameConfig extends Model<GameConfig> {
 	@IsUUID(4)
 	@PrimaryKey
-	@Column({ allowNull: false })
-	public id: string;
+	@Column({ allowNull: false, type: DataType.STRING })
+	declare public id: string;
 
-	@Column
-	public name: string;
+	@Column(DataType.STRING)
+	declare public name: string;
 
 	@Column(DataType.JSON)
-	public value: string;
+	declare public value: string;
 
 	@BelongsTo((): typeof User => User)
-	public user: User;
+	declare public user: User;
 
 	@ForeignKey((): typeof User => User)
-	public userId: string;
+	declare public userId: string;
 }

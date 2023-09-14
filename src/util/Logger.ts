@@ -1,8 +1,8 @@
-import { omit } from 'lodash';
+import { omit } from 'lodash-es';
 import { createLogger, format, transports } from 'winston';
 
 // tslint:disable
-const color = require('json-colorizer');
+import color from 'json-colorizer';
 
 const logger = createLogger({
 	level: 'info',

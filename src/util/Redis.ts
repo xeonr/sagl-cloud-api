@@ -1,4 +1,4 @@
-import vaultConfig from '@majesticfudgie/vault-config';
+import vaultConfig from 'config';
 import IORedis, { Redis } from 'ioredis';
 
 function getRedis(): Redis {

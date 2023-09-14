@@ -3,13 +3,13 @@ import { Lifecycle, Server } from '@hapi/hapi';
 import { createHash } from 'crypto';
 import { createReadStream } from 'fs';
 import Joi from 'joi';
-import { omit, pick } from 'lodash';
+import { omit, pick } from 'lodash-es';
 import { v4 } from 'uuid';
 
-import { SaveGameState } from '../../models/SaveGameState';
-import { Request } from '../../util/Auth';
-import { S3 } from '../../util/S3';
-import { RouterFn } from './../../util/Types';
+import { SaveGameState } from '../../models/SaveGameState.js';
+import { Request } from '../../util/Auth.js';
+import { S3 } from '../../util/S3.js';
+import { RouterFn } from './../../util/Types.js';
 
 function getSavePath(userId: string, slot: number, saveHash: string): string {
 	return `saves/${userId}/${slot}/${saveHash.substr(0, 2)}/${saveHash}`;

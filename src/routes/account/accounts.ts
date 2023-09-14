@@ -1,13 +1,13 @@
 import { Lifecycle, Server } from '@hapi/hapi';
 import Joi from 'joi';
-import { post } from 'request-promise-native';
+import fetch from 'node-fetch'
 import { v4 } from 'uuid';
 
-import { Request } from '../../util/Auth';
-import { Logger } from '../../util/Logger';
-import { Analytic } from './../../models/Analytic';
-import { User } from './../../models/User';
-import { RouterFn } from './../../util/Types';
+import { Request } from '../../util/Auth.js';
+import { Logger } from '../../util/Logger.js';
+import { Analytic } from './../../models/Analytic.js';
+import { User } from './../../models/User.js';
+import { RouterFn } from './../../util/Types.js';
 
 export const routes: RouterFn = (router: Server): void => {
 	router.route({
@@ -73,9 +73,9 @@ export const routes: RouterFn = (router: Server): void => {
 
 			delete data.metrics;
 
-			post('https://discord.com/api/webhooks/850523640893800449/RXT_F75zniUM12BvlQyx5mw5DNskSoUHgJ9ludvlOKXJn_NgXMMvCU7oF7bJiFVzomOv', {
-				json: true,
-				body: {
+			fetch('https://discord.com/api/webhooks/850523640893800449/RXT_F75zniUM12BvlQyx5mw5DNskSoUHgJ9ludvlOKXJn_NgXMMvCU7oF7bJiFVzomOv', {
+				method: 'POST',
+				body: JSON.stringify({
 					username: '🧪',
 					content: `**Tracked new event: ${request.payload.name}**`,
 					embeds: [{
@@ -88,7 +88,7 @@ export const routes: RouterFn = (router: Server): void => {
 							return { name: i, value: String(data[i]), inline: true };
 						}),
 					}],
-				},
+				}),
 			}).catch((err: Error) => {
 				Logger.warn(`Unable to inform discord: ${err.message}`);
 			});

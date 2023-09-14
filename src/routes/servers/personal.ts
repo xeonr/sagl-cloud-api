@@ -4,9 +4,9 @@ import { createHash } from 'crypto';
 import Joi from 'joi';
 import { v4 } from 'uuid';
 
-import { PersonalServer } from '../../models/PersonalServer';
-import { Request } from '../../util/Auth';
-import { RouterFn } from '../../util/Types';
+import { PersonalServer } from '../../models/PersonalServer.js';
+import { Request } from '../../util/Auth.js';
+import { RouterFn } from '../../util/Types.js';
 
 function createSha(name: string, port: number): string {
 	return createHash('sha1')

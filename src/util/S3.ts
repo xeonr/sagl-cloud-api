@@ -1,5 +1,5 @@
 import { Storage } from '@google-cloud/storage';
-import vaultConfig from '@majesticfudgie/vault-config';
+import vaultConfig from 'config';
 import { Stream } from 'stream';
 
 const storage = vaultConfig.has('storage.auth') ? new Storage({

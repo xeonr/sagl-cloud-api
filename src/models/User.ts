@@ -4,41 +4,41 @@ import { Column, DataType, Default, IsUUID, Model, PrimaryKey, Table } from 'seq
 export class User extends Model<User> {
 	@IsUUID(4)
 	@PrimaryKey
-	@Column({ allowNull: false })
-	public id: string;
+	@Column({ type: DataType.STRING, allowNull: false })
+	declare public id: string;
 
-	@Column
-	public discordAvatar: string;
+	@Column(DataType.STRING)
+	declare public discordAvatar: string;
 
-	@Column
-	public discordUsername: string;
+	@Column(DataType.STRING)
+	declare public discordUsername: string;
 
-	@Column
-	public discordDiscriminator: string;
+	@Column(DataType.STRING)
+	declare public discordDiscriminator: string;
 
-	@Column
-	public discordId: string;
+	@Column(DataType.STRING)
+	declare public discordId: string;
 
-	@Column
-	public discordAccessToken: string;
+	@Column(DataType.STRING)
+	declare public discordAccessToken: string;
 
-	@Column
-	public discordRefreshToken: string;
+	@Column(DataType.STRING)
+	declare public discordRefreshToken: string;
 
 	@Column(DataType.DATE)
-	public discordAccessExpiry: Date;
+	declare public discordAccessExpiry: Date;
 
-	@Column
-	public email: string;
+	@Column(DataType.STRING)
+	declare public email: string;
 
-	@Column
-	public sampUsername: string;
+	@Column(DataType.STRING)
+	declare public sampUsername: string;
 
 	@Default({})
 	@Column(DataType.JSON)
-	public launcherSettings: object;
+	declare public launcherSettings: object;
 
 	@Default(false)
-	@Column
-	public whitelisted: boolean;
+	@Column(DataType.BOOLEAN)
+	declare public whitelisted: boolean;
 }

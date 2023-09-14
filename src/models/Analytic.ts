@@ -1,50 +1,50 @@
 import { BelongsTo, Column, DataType, ForeignKey, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
 
-import { User } from './User';
+import { User } from './User.js';
 
 @Table
 export class Analytic extends Model<Analytic> {
 	@IsUUID(4)
 	@PrimaryKey
-	@Column({ allowNull: false })
-	public id: string;
+	@Column({ allowNull: false, type: DataType.STRING })
+	declare public id: string;
 
-	@Column
-	public name: string;
+	@Column(DataType.STRING)
+	declare public name: string;
 
 	@Column(DataType.JSON)
-	public payload: object;
+	declare public payload: object;
 
 	@Column(DataType.STRING)
-	public timezone: string;
+	declare public timezone: string;
 
 	@Column(DataType.STRING)
-	public osPlatform: string;
+	declare public osPlatform: string;
 
 	@Column(DataType.STRING)
-	public osRelease: string;
+	declare public osRelease: string;
 
 	@Column(DataType.STRING)
-	public machineId: string;
+	declare public machineId: string;
 
 	@Column(DataType.JSON)
-	public metrics: object;
+	declare public metrics: object;
 
 	@Column(DataType.STRING)
-	public osVersion: string;
+	declare public osVersion: string;
 
 	@Column(DataType.STRING)
-	public appVersion: string;
+	declare public appVersion: string;
 
 	@Column(DataType.STRING)
-	public sampVersion: string;
+	declare public sampVersion: string;
 
 	@Column(DataType.STRING)
-	public ipAddress: string;
+	declare public ipAddress: string;
 
 	@BelongsTo((): typeof User => User)
-	public user: User;
+	declare public user: User;
 
 	@ForeignKey((): typeof User => User)
-	public userId: string;
+	declare public userId: string;
 }
