@@ -41,4 +41,9 @@ export class User extends Model<User> {
 	@Default(false)
 	@Column(DataType.BOOLEAN)
 	declare public whitelisted: boolean;
+
+
+	@Default(false)
+	@Column(DataType.BOOLEAN)
+	declare public admin: boolean;
 }

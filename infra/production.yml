@@ -21,6 +21,12 @@ spec:
       labels:
         product: sagl
         app: cloud-api
+      annotations:
+        vault.security.banzaicloud.io/vault-addr: http://vault-active.vault.svc.cluster.local:8200
+        vault.security.banzaicloud.io/vault-agent: "false"
+        vault.security.banzaicloud.io/vault-path: kubernetes
+        vault.security.banzaicloud.io/vault-role: sagl-prod-cloud-api
+        vault.security.banzaicloud.io/enable-json: "true"
       name: cloud-api
     spec:
       serviceAccountName: vault-auth
@@ -30,18 +36,28 @@ spec:
           env:
             - name: NODE_ENV
               value: production
-            - name: VAULT_ADDR
-              value: http://vault-active.vault.svc.cluster.local:8200
-            - name: VAULT_KUBERNETES_ROLE
-              value: sagl-prod-cloud-api
-            - name: ELASTIC_APM_SERVICE_NAME
-              value: sagl-cloud-api
-            - name: ELASTIC_APM_SERVER_URL
-              value: http://elastic.kube-system:8200
-            - name: ELASTIC_APM_CAPTURE_BODY
-              value: all
-            - name: ELASTIC_APM_LOG_UNCAUGHT_EXCEPTIONS
-              value: "true"
+            - name: SAGL_DISCORD_CLIENT_ID
+              value: "vault:sagl/data/cloud-api/discord#clientId"
+            - name: SAGL_DISCORD_CLIENT_SECRET
+              value: "vault:sagl/data/cloud-api/s3#clientSecret"
+            - name: SAGL_MYSQL_DATABASE
+              value: "sagl-cloud"
+            - name: SAGL_MYSQL_USERNAME
+              value: "vault:sagl/data/database/mysql#username"
+            - name: SAGL_MYSQL_PASSWORD
+              value: "vault:sagl/data/database/mysql#password"
+            - name: SAGL_MYSQL_HOST
+              value: "vault:sagl/data/database/mysql#host"
+            - name: SAGL_REDIS_HOST
+              value: "vault:sagl/data/database/redis#host"
+            - name: SAGL_REDIS_PORT
+              value: "vault:sagl/data/database/redis#port"
+            - name: SAGL_REDIS_PASSWORD
+              value: "vault:sagl/data/database/redis#password"
+            - name: SAGL_STORAGE_JSON
+              value: "vault:sagl/data/cloud-api/gcs#gcsJson"
+            - name: SAGL_JWT_SECRET
+              value: "vault:sagl/data/cloud-api/jwt#secret"
           resources:
             requests:
               cpu: "250m"

@@ -135,12 +135,15 @@ export const routes: RouterFn = (router: Server): void => {
 			const { accessToken, refreshToken, expiresAt } = await getToken(request.query.code);
 			const user: IDiscordUser = await getUser(accessToken);
 
+
+			const fixedUsername = user.discriminator === '0' ? user.username : `${user.username}#${user.discriminator}`;
+
 			let account: User | null = await User.findOne({ where: { discordId: user.id } });
 			if (account) {
 				await account.update({
 					discordAvatar: user.avatar,
-					discordUsername: user.username,
-					discordDiscriminator: user.discriminator,
+					discordUsername: fixedUsername,
+					discordDiscriminator: '',
 					discordId: user.id,
 					discordAccessToken: accessToken,
 					discordRefreshToken: refreshToken,
@@ -152,8 +155,8 @@ export const routes: RouterFn = (router: Server): void => {
 					id: v4(),
 					...(account ? account.toJSON() : {}),
 					discordAvatar: user.avatar,
-					discordUsername: user.username,
-					discordDiscriminator: user.discriminator,
+					discordUsername: fixedUsername,
+					discordDiscriminator: '',
 					discordAccessToken: accessToken,
 					discordRefreshToken: refreshToken,
 					discordAccessExpiry: expiresAt,
@@ -201,7 +204,16 @@ export const routes: RouterFn = (router: Server): void => {
 			}
 
 			const { userId } = JSON.parse(val);
-			const token: string = sign({ userId }, vaultConfig.get('web.jwtToken'));
+			const user = await User.findOne({ where: { id: userId }});
+			const token: string = sign({
+				userId,
+				discord: {
+					id: user.discordId,
+					avatar: user.discordAvatar,
+					username: user.discordUsername,
+				},
+				scopes: user.admin ? ['admin'] : [],
+			}, vaultConfig.get('web.jwtToken'));
 
 			return {
 				jwt: token,
