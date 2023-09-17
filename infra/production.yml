@@ -39,7 +39,7 @@ spec:
             - name: SAGL_DISCORD_CLIENT_ID
               value: "vault:sagl/data/cloud-api/discord#clientId"
             - name: SAGL_DISCORD_CLIENT_SECRET
-              value: "vault:sagl/data/cloud-api/s3#clientSecret"
+              value: "vault:sagl/data/cloud-api/discord#clientSecret"
             - name: SAGL_MYSQL_DATABASE
               value: "sagl-cloud"
             - name: SAGL_MYSQL_USERNAME
