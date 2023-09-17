@@ -20,9 +20,15 @@ module.exports = {
 	},
 	storage: {
 		bucket: "cdn.sagl.app",
-		auth: JSON.parse(
-			process.env.SAGL_STORAGE_JSON.split(String.raw`\n`).join("\n")
-		),
+		auth: (() => {
+			const gcs = JSON.parse(
+				process.env.SAGL_STORAGE_JSON,
+			);
+
+			gcs['private_key'] = gcs['private_key'].replace(/\\n/g, '\n');
+
+			return gcs;
+		})(),
 	},
 	web: {
 		jwtToken: process.env.SAGL_JWT_SECRET,
