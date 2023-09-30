@@ -22,11 +22,9 @@ export interface IToken {
 }
 
 export async function validateAuth(token: IToken): Promise<{ isValid: boolean; credentials?: unknown }> {
-	console.log(token);
 	const user: User | null = await User.findOne({ where: { id: token.userId } });
 
-	console.log(user.whitelisted);
-	if (!user || !user.whitelisted) {
+	if (!user) {
 		return { isValid: false };
 	}
 

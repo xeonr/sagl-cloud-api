@@ -30,25 +30,6 @@ const page = `
 </body>
 <html>
 `;
-const goAway = `
-<html>
-<head>
-	<title>Not whitelisted</title>
-	<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
-	<style>
-		* { background: #111; color: #FFF; font-family: "Open Sans", sans-serif; }
-		p { text-align: center; color: rgba(255,255,255,0.5);  }
-		p span { opacity: 1; }
-		div { height: 100vh; display: flex; flex-direction: row; align-items: center; justify-content: center; font-size: 1.5em; }
-	</style>
-</head>
-<body>
-	<div>
-		<p>Unfortunately, you don't have access to test the private alpha of SA:GL at this time.</p>
-	</div>
-</body>
-<html>
-`;
 
 function createRedirect(state: string, redirectUri: string = ''): string {
 	return 'https://discord.com/api/oauth2/authorize?'
@@ -165,11 +146,11 @@ export const routes: RouterFn = (router: Server): void => {
 				});
 			}
 
-			if (!account.whitelisted) {
-				await redisPub.setex(`auth:${state}`, 60, 'false');
+			// if (!account.whitelisted) {
+			// 	await redisPub.setex(`auth:${state}`, 60, 'false');
 
-				return goAway.trim();
-			}
+			// 	return goAway.trim();
+			// }
 
 			await redisPub.setex(`auth:${state}`, 60, JSON.stringify({ userId: account.id! }));
 
