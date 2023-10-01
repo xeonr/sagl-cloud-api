@@ -75,6 +75,9 @@ export const routes: RouterFn = (router: Server): void => {
 
 			fetch('https://discord.com/api/webhooks/850523640893800449/RXT_F75zniUM12BvlQyx5mw5DNskSoUHgJ9ludvlOKXJn_NgXMMvCU7oF7bJiFVzomOv', {
 				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
 				body: JSON.stringify({
 					username: '🧪',
 					content: `**Tracked new event: ${request.payload.name}**`,
@@ -89,8 +92,14 @@ export const routes: RouterFn = (router: Server): void => {
 						}),
 					}],
 				}),
-			}).catch((err: Error) => {
-				Logger.warn(`Unable to inform discord: ${err.message}`);
+			})
+				.then(async (resp) => {
+					if (resp.status  < 399) {
+						throw await resp.text();
+					}
+			})
+			.catch((err: Error | string) => {
+				Logger.warn(`Unable to inform discord: ${typeof err === 'string' ? err : err?.message}`);
 			});
 
 			return {
