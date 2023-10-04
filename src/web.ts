@@ -26,7 +26,9 @@ const server: Server = new Server({
 	host: vaultConfig.get('web.host'),
 	port: vaultConfig.get('web.port'),
 	routes: {
-		cors: true,
+		cors: {
+			origin: ["*"]
+		},
 		validate: {
 			failAction: (_: Request, __: ResponseToolkit, err?: Error): Lifecycle.ReturnValue => {
 				throw err;
