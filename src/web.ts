@@ -27,7 +27,8 @@ const server: Server = new Server({
 	port: vaultConfig.get('web.port'),
 	routes: {
 		cors: {
-			origin: ["*"]
+			origin: ["*"],
+			additionalHeaders: ['baggage', 'sentry-trace']
 		},
 		validate: {
 			failAction: (_: Request, __: ResponseToolkit, err?: Error): Lifecycle.ReturnValue => {
