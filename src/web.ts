@@ -26,9 +26,7 @@ const server: Server = new Server({
 	host: vaultConfig.get('web.host'),
 	port: vaultConfig.get('web.port'),
 	routes: {
-		cors: {
-			origin: ['https://sagl.app', 'https://sagl.mp']
-		},
+		cors: true,
 		validate: {
 			failAction: (_: Request, __: ResponseToolkit, err?: Error): Lifecycle.ReturnValue => {
 				throw err;
